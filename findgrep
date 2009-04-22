@@ -1,0 +1,26 @@
+#!/bin/sh
+
+#
+# Grep multiple files in the current directory and subdirectories.
+# The filtering is to exclude files you probably don't want to grep
+#
+# Usage:
+#  findgrep needle
+#
+
+find . \
+    -name ".bzr" -prune -o \
+    -name ".svn" -prune -o \
+    -name ".git" -prune -o \
+    ! -iname "*.gz" \
+    ! -iname "*.tgz" \
+    ! -iname "*.zip" \
+    ! -iname "*.swp" \
+    ! -iname "*.pdf" \
+    ! -iname "*.gif" \
+    ! -iname "*.jpg" \
+    ! -iname "*.png" \
+    ! -iname "*.ttf" \
+    -exec \
+        grep -n -i "$1" /dev/null {} \;
+
