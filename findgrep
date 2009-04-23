@@ -13,7 +13,8 @@
 #
 
 if [ ".$1" = ".-i" ]; then
-	NO_CASE=$1
+	NO_CASE='-i'
+	AWK_NO_CASE='BEGIN{ IGNORECASE = 1 }'
 	shift;
 fi
 
@@ -49,5 +50,5 @@ find . \
 	$FIND_IN_FILES \
 	-exec \
 		grep -n $NO_CASE "$SEARCH_TERM" /dev/null {} \; \
-			| awk -F':' "{ print \"$FILE_NAME_COLOR\"\$1 \"$COLOR_OFF:$LINE_NUMBER_COLOR\" \$2 \"$COLOR_OFF:\"gensub(/$SEARCH_TERM/,\"$SEARCH_TERM_COLOR&$COLOR_OFF\",\"g\",\$3\$4\$5\$6\$7\$8\$9\$10\$11\$12\$13\$14\$15\$16) }"
+			| awk -F':' "$AWK_NO_CASE{ print \"$FILE_NAME_COLOR\"\$1 \"$COLOR_OFF:$LINE_NUMBER_COLOR\" \$2 \"$COLOR_OFF:\"gensub(/$SEARCH_TERM/,\"$SEARCH_TERM_COLOR&$COLOR_OFF\",\"g\",\$3\$4\$5\$6\$7\$8\$9\$10\$11\$12\$13\$14\$15\$16) }"
 
