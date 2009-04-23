@@ -13,6 +13,10 @@ find . \
     -name ".svn" -prune -o \
     -name ".git" -prune -o \
     ! -iname "*.gz" \
+    ! -iname "*.~?~" \
+    ! -iname "._*" \
+    ! -iname ".Trashes" \
+    ! -iname ".Spotlight-*" \
     ! -iname "*.tgz" \
     ! -iname "*.zip" \
     ! -iname "*.swp" \
