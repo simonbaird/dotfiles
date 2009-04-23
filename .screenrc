@@ -1,0 +1,44 @@
+
+hardstatus on
+hardstatus alwayslastline
+
+hardstatus alwayslastline "%{Bb} %?%-Lw%?%{B}%{Wk} %n*%f %t%?(%u)%? %{Bb}%?%+Lw %= %{Mm} %H %{Yy} %D %d/%m %{Gg} %C:%s %a "
+
+startup_message off
+vbell off
+bind  dumptermcap
+
+# terminfo and termcap for nice 256 color terminal
+# allow bold colors - necessary for some reason
+attrcolor b ".I"
+
+# tell screen how to set colors. AB = background, AF=foreground
+termcapinfo xterm 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
+
+# erase background with current bg color
+# need it for vim colorschemes with background color
+defbce "on" 
+
+screen -t 'Code' 1
+screen -t 'Bin' 2
+screen -t 'Misc' 3
+screen -t 'Db' 4
+screen -t 'Root' 5
+screen -t 'ApacheLog' 8
+screen -t 'ErrorLog' 9 # /home/simonb/bin/benonlog
+
+select 1
+
+bindkey -k k1 select 01
+bindkey -k k2 select 02
+bindkey -k k3 select 03
+bindkey -k k4 select 04
+bindkey -k k5 select 05
+bindkey -k k6 select 06
+bindkey -k k7 select 07
+bindkey -k k8 select 08
+bindkey -k k9 select 09
+bindkey -k k; select 10
+bindkey -k F1 select 11
+bindkey -k F2 select 12
+
