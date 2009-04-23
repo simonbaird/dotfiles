@@ -4,18 +4,30 @@
 # Grep multiple files in the current directory and subdirectories.
 # The filtering is to exclude files you probably don't want to grep
 #
-# Usage:
-#  findgrep needle
+# http://github.com/simonbaird/personal/blob/master/findgrep
 #
+# Usage:
+#  findgrep needle           # look for needle
+#  findgrep -i neEdle        # case insensitive
+#  findgrep needle '*.php'   # only look in php files
+#
+
+if [ ".$1" = ".-i" ]; then
+	NO_CASE=$1
+	shift;
+fi
+
+SEARCH_TERM=$1
+FIND_IN_FILES=$2
+
+if [ ".$FIND_IN_FILES" != '.' ]; then
+	FIND_IN_FILES="-iname $FIND_IN_FILES"
+fi
 
 SEARCH_TERM_COLOR='[0;31m'
 FILE_NAME_COLOR='[0;33m'
 LINE_NUMBER_COLOR='[0;34m'
 COLOR_OFF='[0m'
-
-SEARCH_TERM=$1
-GREP_ARGS=$2
-FIND_ARGS=$3
 
 find . \
 	-name ".bzr" -prune -o \
@@ -34,8 +46,8 @@ find . \
 	! -iname "*.jpg" \
 	! -iname "*.png" \
 	! -iname "*.ttf" \
-	$FIND_ARGS \
+	$FIND_IN_FILES \
 	-exec \
-		grep -n $GREP_ARGS "$SEARCH_TERM" /dev/null {} \; \
+		grep -n $NO_CASE "$SEARCH_TERM" /dev/null {} \; \
 			| awk -F':' "{ print \"$FILE_NAME_COLOR\"\$1 \"$COLOR_OFF:$LINE_NUMBER_COLOR\" \$2 \"$COLOR_OFF:\"gensub(/$SEARCH_TERM/,\"$SEARCH_TERM_COLOR&$COLOR_OFF\",\"g\",\$3\$4\$5\$6\$7\$8\$9\$10\$11\$12\$13\$14\$15\$16) }"
 
