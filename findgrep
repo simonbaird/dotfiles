@@ -5,49 +5,37 @@
 # The filtering is to exclude files you probably don't want to grep
 #
 # Usage:
-#  findgrep needle              # case sensitive grep
-#  findgrep needle -i           # case insensitive grep
-#  findgrep needle -i '*.pm'    # case 
-#  findgrep needle '' '*.pm'
+#  findgrep needle
 #
-
-if [ ".$1" = ".-i" ]; then
-	NO_CASE=$1
-	shift;
-fi
-
-SEARCH_TERM=$1
-FIND_IN_FILES=$2
-
-if [ "z$FIND_IN_FILES" != 'z' ]; then
-	FIND_IN_FILES="-iname $FIND_IN_FILES"
-fi
 
 SEARCH_TERM_COLOR='[0;31m'
 FILE_NAME_COLOR='[0;33m'
 LINE_NUMBER_COLOR='[0;34m'
 COLOR_OFF='[0m'
 
+SEARCH_TERM=$1
+GREP_ARGS=$2
+FIND_ARGS=$3
+
 find . \
-    -name ".bzr" -prune -o \
-    -name ".svn" -prune -o \
-    -name ".git" -prune -o \
-    ! -iname "*.gz" \
-    ! -iname "*.~?~" \
-    ! -iname "._*" \
-    ! -iname ".Trashes" \
-    ! -iname ".Spotlight-*" \
-    ! -iname "*.tgz" \
-    ! -iname "*.zip" \
-    ! -iname "*.swp" \
-    ! -iname "*.pdf" \
-    ! -iname "*.gif" \
-    ! -iname "*.jpg" \
-    ! -iname "*.png" \
-    ! -iname "*.ttf" \
-	$FIND_IN_FILES \
-    -exec \
-		grep -n $NO_CASE "$SEARCH_TERM" /dev/null {} \; \
-			| sed "s/\($SEARCH_TERM\\)/${SEARCH_TERM_COLOR}\\1${COLOR_OFF}/ig" \
-			| sed "s/^\\([^:]*\\):\\([^:]*\\):/${FILE_NAME_COLOR}\\1${COLOR_OFF}:${LINE_NUMBER_COLOR}\\2${COLOR_OFF}:/"
+	-name ".bzr" -prune -o \
+	-name ".svn" -prune -o \
+	-name ".git" -prune -o \
+	! -iname "*.gz" \
+	! -iname "*.~?~" \
+	! -iname "._*" \
+	! -iname ".Trashes" \
+	! -iname ".Spotlight-*" \
+	! -iname "*.tgz" \
+	! -iname "*.zip" \
+	! -iname "*.swp" \
+	! -iname "*.pdf" \
+	! -iname "*.gif" \
+	! -iname "*.jpg" \
+	! -iname "*.png" \
+	! -iname "*.ttf" \
+	$FIND_ARGS \
+	-exec \
+		grep -n $GREP_ARGS "$SEARCH_TERM" /dev/null {} \; \
+			| awk -F':' "{ print \"$FILE_NAME_COLOR\"\$1 \"$COLOR_OFF:$LINE_NUMBER_COLOR\" \$2 \"$COLOR_OFF:\"gensub(/$SEARCH_TERM/,\"$SEARCH_TERM_COLOR&$COLOR_OFF\",\"g\",\$3\$4\$5\$6\$7\$8\$9\$10\$11\$12\$13\$14\$15\$16) }"
 
