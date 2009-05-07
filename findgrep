@@ -13,15 +13,15 @@
 #
 
 if [ ".$1" = ".-i" ]; then
-	NO_CASE='-i'
-	AWK_NO_CASE='BEGIN{ IGNORECASE = 1 }'
+	NO_CASE=$1
+	AWK_NO_CASE='-vIGNORECASE=1'
 	shift;
 fi
 
 SEARCH_TERM=$1
 FIND_IN_FILES=$2
 
-if [ ".$FIND_IN_FILES" != '.' ]; then
+if [ "~$FIND_IN_FILES" != '~' ]; then
 	FIND_IN_FILES="-iname $FIND_IN_FILES"
 fi
 
@@ -34,8 +34,10 @@ find . \
 	-name ".bzr" -prune -o \
 	-name ".svn" -prune -o \
 	-name ".git" -prune -o \
+	-name "phpdoc" -prune -o \
 	! -iname "*.gz" \
 	! -iname "*.~?~" \
+	! -iname "*~" \
 	! -iname "._*" \
 	! -iname ".Trashes" \
 	! -iname ".Spotlight-*" \
@@ -50,5 +52,10 @@ find . \
 	$FIND_IN_FILES \
 	-exec \
 		grep -n $NO_CASE "$SEARCH_TERM" /dev/null {} \; \
-			| awk -F':' "$AWK_NO_CASE{ print \"$FILE_NAME_COLOR\"\$1 \"$COLOR_OFF:$LINE_NUMBER_COLOR\" \$2 \"$COLOR_OFF:\"gensub(/$SEARCH_TERM/,\"$SEARCH_TERM_COLOR&$COLOR_OFF\",\"g\",\$3\$4\$5\$6\$7\$8\$9\$10\$11\$12\$13\$14\$15\$16) }"
+			| awk -F':' -vORS='' $AWK_NO_CASE "{
+				print \"$FILE_NAME_COLOR\"\$1\"$COLOR_OFF:\"
+				print \"$LINE_NUMBER_COLOR\" \$2 \"$COLOR_OFF:\"
+				print gensub(/$SEARCH_TERM/, \"$SEARCH_TERM_COLOR&$COLOR_OFF\", \"g\", substr(\$0,length(\$1\$2)+3))
+				print \"\n\"
+			}"
 
