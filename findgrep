@@ -25,10 +25,10 @@ if [ "~$FIND_IN_FILES" != '~' ]; then
 	FIND_IN_FILES="-iname $FIND_IN_FILES"
 fi
 
-SEARCH_TERM_COLOR='[0;31m'
-FILE_NAME_COLOR='[0;33m'
-LINE_NUMBER_COLOR='[0;34m'
-COLOR_OFF='[0m'
+SEARCH_TERM_COLOR='\033[0;31m'
+FILE_NAME_COLOR='\033[0;33m'
+LINE_NUMBER_COLOR='\033[0;34m'
+COLOR_OFF='\033[0m'
 
 find . \
 	-name ".bzr" -prune -o \
@@ -55,7 +55,8 @@ find . \
 			| awk -F':' -vORS='' $AWK_NO_CASE "{
 				print \"$FILE_NAME_COLOR\" \$1 \"$COLOR_OFF:\"
 				print \"$LINE_NUMBER_COLOR\" \$2 \"$COLOR_OFF:\"
-				print gensub(/$SEARCH_TERM/, \"$SEARCH_TERM_COLOR&$COLOR_OFF\", \"g\", substr(\$0,length(\$1\$2)+3))
-				print \"\n\"
+				text = substr(\$0,length(\$1\$2)+3)
+				gsub(/$SEARCH_TERM/, \"$SEARCH_TERM_COLOR&$COLOR_OFF\", text)
+				print text \"\n\"
 			}"
 
