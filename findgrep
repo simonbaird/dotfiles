@@ -53,7 +53,7 @@ find . \
 	-exec \
 		grep -n $NO_CASE "$SEARCH_TERM" /dev/null {} \; \
 			| awk -F':' -vORS='' $AWK_NO_CASE "{
-				print \"$FILE_NAME_COLOR\"\$1\"$COLOR_OFF:\"
+				print \"$FILE_NAME_COLOR\" \$1 \"$COLOR_OFF:\"
 				print \"$LINE_NUMBER_COLOR\" \$2 \"$COLOR_OFF:\"
 				print gensub(/$SEARCH_TERM/, \"$SEARCH_TERM_COLOR&$COLOR_OFF\", \"g\", substr(\$0,length(\$1\$2)+3))
 				print \"\n\"
