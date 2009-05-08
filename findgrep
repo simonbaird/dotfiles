@@ -11,10 +11,17 @@
 #  findgrep -i neEdle        # case insensitive
 #  findgrep needle '*.php'   # only look in php files
 #
+# Notes:
+#
+#  IGNORECASE doesn't work in standard awk (it works in gawk) hence highlighting
+#  doesn't quite work right always
+#
+#  You might want to adjust the -prune and ! -iname lines as required
+#
 
 if [ ".$1" = ".-i" ]; then
-	NO_CASE=$1
-	AWK_NO_CASE='-vIGNORECASE=1'
+	GREP_NO_CASE=$1
+	AWK_NO_CASE='IGNORECASE=1'
 	shift;
 fi
 
@@ -51,8 +58,8 @@ find . \
 	! -iname "*.ttf" \
 	$FIND_IN_FILES \
 	-exec \
-		grep -n $NO_CASE "$SEARCH_TERM" /dev/null {} \; \
-			| awk -F':' -vORS='' $AWK_NO_CASE "{
+		grep -n $GREP_NO_CASE "$SEARCH_TERM" /dev/null {} \; \
+			| awk -F':' "BEGIN { ORS=\"\"; $AWK_NO_CASE }{
 				print \"$FILE_NAME_COLOR\" \$1 \"$COLOR_OFF:\"
 				print \"$LINE_NUMBER_COLOR\" \$2 \"$COLOR_OFF:\"
 				text = substr(\$0,length(\$1\$2)+3)
