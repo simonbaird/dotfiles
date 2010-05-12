@@ -1,6 +1,6 @@
 
 " for pathogen
-filetype off
+filetype off  
 call pathogen#runtime_append_all_bundles()
 filetype plugin indent on
 "
@@ -143,13 +143,13 @@ map <C-C>r :!phpunit %<CR>
 " Nerd tree
 map <C-O> :NERDTreeToggle<CR>
 
-" highlight spaces at start of line and tabs later (because you don't generally want those)
-" tab space star is allowed for docblocks
-" (red version)
-"(underline version)
-"autocmd BufWinEnter * match  Underlined /[^\t]\zs\t\+\|\s\+$/
-"autocmd BufWinEnter * 2match Underlined /^\t*\zs \+\ze[^*]/
-
+" 1. highlight trailing whitespace in red
+" 2. have this highlighting not appear whilst you are typing in insert mode
+" 3. have the highlighting of whitespace apply when you open new buffers
+highlight ExtraWhitespace ctermbg=red guibg=darkred
+match ExtraWhitespace /\s\+$/
+au BufWinEnter,BufRead,BufNewFile,InsertLeave * match ExtraWhitespace /\s\+$/
+au InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
 
 "set statusline=%-50.50F\ %2*[Format:\ %{&ff}]%*\ %2*[Type:\ %-6Y]%*\ %2*[ASCII:\ \%4.3b]%*\ %2*[HEX:\ \%02.2B]%*\ %4*(%4l,%4v)%*\ %6*%3p%%\ \ of\ %4L\ lines%*\ %1*%3m%4r%6h%*
 "set laststatus=2
@@ -166,8 +166,6 @@ hi  User6   term=reverse    cterm=reverse   ctermfg=cyan    ctermbg=NONE    guif
 map <C-C>t :!make tags<CR>:set tags=TAGS<CR>
 
 "set foldopen=all
-
-
 
 set guioptions-=T                     " Hide gvim toolbar
 set guioptions+=br                    " Add bottom and right scrollbars
