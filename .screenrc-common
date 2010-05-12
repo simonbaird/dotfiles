@@ -1,0 +1,34 @@
+
+# ^a is for start of line, duh..
+escape ^xx
+
+# Start on the first screen
+select 1
+
+
+# Use caption instead of hardstatus alwayslastline
+hardstatus ignore
+
+# This one is a bit garish unless you can tweak your dark blue
+#caption always "%{kk}%{bB} %?%-Lw%?%{B}%{wk} %n*%f %t%?(%u)%? %{Bb}%?%+Lw %= %{Mm} %H %{Yy} %D %d/%m %{Gg} %C %a "
+
+# Toned down version, better on osx
+caption always "%{kk}%{kK} %?%-Lw%?%{k}%{wk} %n*%f %t%?(%u)%? %{kK}%?%+Lw %= %{kM} %H %{kY} %D %d/%m %{kG} %C %a "
+
+# This stops the terminal window resizing somehow
+termcapinfo xterm|gnome* 'is=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;4;6l'
+
+# 256 colors?
+#termcapinfo xterm|gnome* 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
+
+# Allow bold colors??
+attrcolor b ".I"
+
+# Erase background with current bg color
+# Need it for vim colorschemes with background color (maybe)
+defbce "on" 
+
+# Etc
+startup_message off
+vbell off
+
