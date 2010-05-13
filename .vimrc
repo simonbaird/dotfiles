@@ -1,4 +1,6 @@
 
+set fileencoding=utf-8
+
 " for pathogen
 filetype off
 call pathogen#runtime_append_all_bundles()
@@ -8,7 +10,7 @@ filetype plugin indent on
 syntax on " duh
 set background=dark
 
-set t_Co=256 " enable 256 colors
+"set t_Co=256 " enable 256 colors
 
 
 "let g:zenburn_high_Contrast = 1
@@ -20,6 +22,7 @@ colorscheme ir_black
 "colorscheme koehler
 
 set t_Co=256 "enable 256 colors
+
 "colorscheme desert256 "set colorscheme to desert256
 syntax enable "turn on syntax highlighting
 
@@ -78,11 +81,11 @@ set shiftwidth=4
 "
 ""ascii-183==·
 ""ascii-187==»
-set listchars=tab:»·
+"set listchars=tab:»·
 "set listchars=tab:»–
 "set listchars=tab:»\
 "set listchars=tab:·–
-"set listchars=tab:·\
+set listchars=tab:·\ 
 "set listchars=tab:\|\
 "set list
 
@@ -94,16 +97,16 @@ au BufNewFile,BufReadPre *.rb set tabstop=2 softtabstop=2 shiftwidth=2 expandtab
 "---------------------------------------------------------------------------
 
 " make visible tabs less in your face
-"hi NonText cterm=NONE ctermfg=darkblue guifg=darkblue
-"hi clear SpecialKey
-"hi link SpecialKey NonText
+hi NonText cterm=NONE ctermfg=darkblue guifg=darkblue
+hi clear SpecialKey
+hi link SpecialKey NonText
 
 " make fold markers less in your face
 highlight Folded ctermbg=NONE ctermfg=green
 set fillchars=fold:\
 
 " and so on..
-"highlight LineNr cterm=NONE ctermfg=black guifg=#333333 guibg=NONE
+"highlight LineNr cterm=NONE ctermfg=grey guifg=#777777 guibg=NONE
 highlight LineNr cterm=NONE ctermbg=darkblue ctermfg=blue guifg=#333333 guibg=NONE
 
 
@@ -154,21 +157,12 @@ autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
 "set statusline=%-50.50F\ %2*[Format:\ %{&ff}]%*\ %2*[Type:\ %-6Y]%*\ %2*[ASCII:\ \%4.3b]%*\ %2*[HEX:\ \%02.2B]%*\ %4*(%4l,%4v)%*\ %6*%3p%%\ \ of\ %4L\ lines%*\ %1*%3m%4r%6h%*
 "set laststatus=2
 
-" The strings "%N*" unto "%*" correspond to the highlight group "UserN":
-hi  User1   term=reverse    cterm=reverse   ctermfg=red     ctermbg=NONE    guifg=lightred      guibg=NONE  gui=reverse,bold
-hi  User2   term=reverse    cterm=reverse   ctermfg=green   ctermbg=NONE    guifg=lightgreen    guibg=NONE  gui=reverse,bold
-hi  User3   term=reverse    cterm=reverse   ctermfg=blue    ctermbg=NONE    guifg=lightblue     guibg=NONE  gui=reverse,bold
-hi  User4   term=reverse    cterm=reverse   ctermfg=yellow  ctermbg=NONE    guifg=lightyellow   guibg=NONE  gui=reverse,bold
-hi  User5   term=reverse    cterm=reverse   ctermfg=magenta ctermbg=NONE    guifg=lightmagenta  guibg=NONE  gui=reverse,bold
-hi  User6   term=reverse    cterm=reverse   ctermfg=cyan    ctermbg=NONE    guifg=lightcyan     guibg=NONE  gui=reverse,bold
-
-
 map <C-C>t :!make tags<CR>:set tags=TAGS<CR>
 
 "set foldopen=all
 
 set guioptions-=T                     " Hide gvim toolbar
-set guioptions+=br                    " Add bottom and right scrollbars
+"set guioptions+=br                    " Add bottom and right scrollbars
 set guifont=DejaVu\ Sans\ Mono:h14.00 " Set gvim font
 
 set directory=~/.vimfiles

@@ -3,6 +3,7 @@ screen -t 'code1'   1
 screen -t 'code2'   2
 screen -t 'test'    3
 screen -t 'merge'   4
+screen -t 'db'      5
 screen -t 'console' 8
 screen -t 'server'  9
 

@@ -1,0 +1,26 @@
+#!/bin/sh
+
+# Quick and dirty backup to external disk
+
+START=`date`
+SOURCE=/Users/$USER
+DEST=/Volumes/LITTLE/Backup
+
+rsync -av \
+	--progress \
+	--delete \
+	--delete-excluded \
+	--modify-window=1 \
+	--exclude 'Music/iTunes/iTunes Music/*' \
+	--exclude '.Trash/*' \
+	--exclude 'Downloads/*' \
+	--exclude 'Torrents/*' \
+	--exclude 'Library/Caches/*' \
+	--exclude 'Dropbox/*' \
+	$SOURCE $DEST
+
+END=`date`
+
+echo Started $START
+echo Ended $END
+

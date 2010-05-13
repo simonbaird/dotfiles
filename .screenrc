@@ -1,5 +1,5 @@
 
-source dotfiles/.screenrc-rails
-source dotfiles/.screenrc-common
-#source dotfiles/.screenrc-home
+source .screenrc-rails
+source .screenrc-common
+#source .screenrc-home
 
