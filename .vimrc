@@ -18,6 +18,8 @@ set background=dark
 "colorscheme desert
 "colorscheme vividchalk
 colorscheme ir_black
+"colorscheme vilight
+
 
 "colorscheme koehler
 
@@ -85,19 +87,23 @@ set shiftwidth=4
 "set listchars=tab:»–
 "set listchars=tab:»\
 "set listchars=tab:·–
-set listchars=tab:·\ 
+"set listchars=tab:·\ 
+set listchars=tab:»\ 
 "set listchars=tab:\|\
-"set list
+set list
 
 set number
 
 " no tabs for ruby
 au BufNewFile,BufReadPre *.rb set tabstop=2 softtabstop=2 shiftwidth=2 expandtab
 
+" no tabs for .dot
+au BufNewFile,BufReadPre *.dot set tabstop=2 softtabstop=2 shiftwidth=2 expandtab
+
 "---------------------------------------------------------------------------
 
 " make visible tabs less in your face
-hi NonText cterm=NONE ctermfg=darkblue guifg=darkblue
+hi NonText cterm=NONE ctermfg=darkblue guifg=#222222
 hi clear SpecialKey
 hi link SpecialKey NonText
 
@@ -108,6 +114,7 @@ set fillchars=fold:\
 " and so on..
 "highlight LineNr cterm=NONE ctermfg=grey guifg=#777777 guibg=NONE
 highlight LineNr cterm=NONE ctermbg=darkblue ctermfg=blue guifg=#333333 guibg=NONE
+highlight LineNr cterm=NONE ctermbg=darkblue ctermfg=blue guifg=#222222 guibg=#111111
 
 
 "---------------------------------------------------------------------------

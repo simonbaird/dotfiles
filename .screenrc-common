@@ -28,6 +28,9 @@ attrcolor b ".I"
 # Need it for vim colorschemes with background color (maybe)
 defbce "on" 
 
+# Long scrollback for log files etc
+defscrollback 20000
+
 # Etc
 startup_message off
 vbell off
