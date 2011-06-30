@@ -1,5 +1,3 @@
 
-source .screenrc-rails
-source .screenrc-common
-#source .screenrc-home
-
+source .screenrc-sessions
+source .screenrc-settings
