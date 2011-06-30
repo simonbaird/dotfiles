@@ -1,0 +1,41 @@
+[user]
+  name = Simon Baird
+  email = simon.baird@gmail.com
+
+[color]
+  branch = auto
+  status = auto
+  diff = auto
+
+[push]
+  default = tracking
+
+[core]
+  editor = vim -f
+
+[alias]
+
+  # Nice colourful log summaries
+  ll = "!git st; git --no-pager log --pretty='format:%Cred%cr %Cblue%h %Cgreen%cn:%Creset %s' -n30; echo"
+  lll = log --pretty='format:%Cred%cr %Cblue%h %Cgreen%cn:%Creset %s'
+
+  # The only way to do it...
+  ap = add --patch
+
+  # Shortcuts
+  s = status -sb
+  st = status -sb
+  c = checkout
+  b = branch
+  d = diff
+  sd = diff --staged
+  ld = log -p
+  newbranch = checkout -b
+  newtrack = branch --track
+
+  # Ville's, not sure yet..
+  wup = log -p origin..@{0}
+  wu = log --stat origin..@{0}
+
+  # Previous branch. Sometimes this doesn't work like after a merge or something
+  prev = checkout @{-1}

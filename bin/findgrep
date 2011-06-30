@@ -1,5 +1,10 @@
 #!/bin/sh
 
+######################################################################
+## This is kind of obsolete now but I keep it for old times sake :) ##
+## Use ack: http://betterthangrep.com/                              ##
+######################################################################
+
 #
 # Grep multiple files in the current directory and subdirectories.
 # The filtering is to exclude files you probably don't want to grep
@@ -10,6 +15,7 @@
 #  findgrep needle           # look for needle
 #  findgrep -i neEdle        # case insensitive
 #  findgrep needle '*.php'   # only look in php files
+#  findgrep -b needle        # don't do colors
 #
 # Notes:
 #
@@ -20,21 +26,21 @@
 #
 
 if [ ".$1" = ".-i" ]; then
-	GREP_NO_CASE=$1
-	AWK_NO_CASE='IGNORECASE=1'
-	shift;
+  GREP_NO_CASE=$1
+  AWK_NO_CASE='IGNORECASE=1'
+  shift
 fi
 
 if [ ".$1" = ".-b" ]; then
-	NO_COLOR=1
-	shift;
+  NO_COLOR=1
+  shift
 fi
 
 SEARCH_TERM=$1
 FIND_IN_FILES=$2
 
 if [ "~$FIND_IN_FILES" != '~' ]; then
-	FIND_IN_FILES="-iname $FIND_IN_FILES"
+  FIND_IN_FILES="-iname $FIND_IN_FILES"
 fi
 
 SEARCH_TERM_COLOR='\033[0;31m'
@@ -42,46 +48,41 @@ FILE_NAME_COLOR='\033[0;33m'
 LINE_NUMBER_COLOR='\033[0;34m'
 COLOR_OFF='\033[0m'
 
-SEARCH_TERM_COLOR=''
-FILE_NAME_COLOR=''
-LINE_NUMBER_COLOR=''
-COLOR_OFF=''
-
 if [ ! -z "$NO_COLOR" ]; then
-	SEARCH_TERM_COLOR=''
-	FILE_NAME_COLOR=''
-	LINE_NUMBER_COLOR=''
-	COLOR_OFF=''
+  SEARCH_TERM_COLOR=''
+  FILE_NAME_COLOR=''
+  LINE_NUMBER_COLOR=''
+  COLOR_OFF=''
 fi
 
 find . \
-	-name ".bzr" -prune -o \
-	-name ".svn" -prune -o \
-	-name ".git" -prune -o \
-	-name "phpdoc" -prune -o \
-	! -iname "*.gz" \
-	! -iname "*.~?~" \
-	! -iname "*~" \
-	! -iname "._*" \
-	! -iname ".Trashes" \
-	! -iname ".Spotlight-*" \
-	! -iname "*.tgz" \
-	! -iname "*.zip" \
-	! -iname "*.swp" \
-	! -iname "*.pdf" \
-	! -iname "*.gif" \
-	! -iname "*.jpg" \
-	! -iname "*.png" \
-	! -iname "*.ttf" \
-	! -iname "*.log" \
-	$FIND_IN_FILES \
-	-exec \
-		grep -n $GREP_NO_CASE "$SEARCH_TERM" /dev/null {} \; \
-			| awk -F':' "BEGIN { ORS=\"\"; $AWK_NO_CASE }{
-				print \"$FILE_NAME_COLOR\" \$1 \"$COLOR_OFF:\"
-				print \"$LINE_NUMBER_COLOR\" \$2 \"$COLOR_OFF:\"
-				text = substr(\$0,length(\$1\$2)+3)
-				gsub(/$SEARCH_TERM/, \"$SEARCH_TERM_COLOR&$COLOR_OFF\", text)
-				print text \"\n\"
-			}"
+  -name ".bzr" -prune -o \
+  -name ".svn" -prune -o \
+  -name ".git" -prune -o \
+  -name "phpdoc" -prune -o \
+  ! -iname "*.gz" \
+  ! -iname "*.~?~" \
+  ! -iname "*~" \
+  ! -iname "._*" \
+  ! -iname ".Trashes" \
+  ! -iname ".Spotlight-*" \
+  ! -iname "*.tgz" \
+  ! -iname "*.zip" \
+  ! -iname "*.swp" \
+  ! -iname "*.pdf" \
+  ! -iname "*.gif" \
+  ! -iname "*.jpg" \
+  ! -iname "*.png" \
+  ! -iname "*.ttf" \
+  ! -iname "*.log" \
+  $FIND_IN_FILES \
+  -exec \
+    grep -n $GREP_NO_CASE "$SEARCH_TERM" /dev/null {} \; \
+      | awk -F':' "BEGIN { ORS=\"\"; $AWK_NO_CASE }{
+        print \"$FILE_NAME_COLOR\" \$1 \"$COLOR_OFF:\"
+        print \"$LINE_NUMBER_COLOR\" \$2 \"$COLOR_OFF:\"
+        text = substr(\$0,length(\$1\$2)+3)
+        gsub(/$SEARCH_TERM/, \"$SEARCH_TERM_COLOR&$COLOR_OFF\", text)
+        print text \"\n\"
+      }"
 
