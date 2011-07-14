@@ -34,7 +34,7 @@ TOGGLE_OPTION = 'altwin\taltwin:swap_lalt_lwin'
 #
 # This is close enough to ruby that we can eval it ;)
 # When there are no options set we get an extra @as, not sure why
-current_options = eval `#{GET_CMD} #{SETTING_PATH} #{SETTING_KEY}`.chomp.sub(/@as /,'')
+current_options = eval `#{GET_CMD} #{SETTING_PATH} #{SETTING_KEY}`.chomp.sub(/^@as /,'')
 
 # Toggle the swap_lalt_lwin option
 if current_options.include? TOGGLE_OPTION
