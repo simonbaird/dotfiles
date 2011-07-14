@@ -1,4 +1,22 @@
 #!/usr/bin/env ruby
+#
+# If you use an external apple keyboard on your laptop
+# then you probably want to swap the apple command key and
+# the left alt key so that your fingers can "alt-tab" easily.
+#
+# But when you're using your laptop's internal keyboard you
+# need to swap them back. You can do this in about 10 clicks
+# via the gnome 3 systems settings 'Region and Language' control
+# panel. Or you can use this script.
+#
+# Run this to toggle between swapped and unswapped for the left alt,
+# left windows key (or the command key on an apple keyboard).
+#
+# Latest version here:
+# https://github.com/simonbaird/dotfiles/blob/master/bin/gswapalt
+#
+# Author: Simon Baird
+#
 
 GET_CMD       = '/usr/bin/gsettings get'
 SET_CMD       = '/usr/bin/gsettings set'
