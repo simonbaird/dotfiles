@@ -44,10 +44,10 @@ options = current_string.gsub(/(^\[|\]$)/,'').split(', ').map{ |opt| opt.gsub(/(
 # Toggle the swap_lalt_lwin option
 if options.include? TOGGLE_OPTION
   # Remove it
-  options.reject!{ |opt| opt == TOGGLE_OPTION }
+  options.delete TOGGLE_OPTION
 else
   # Add it
-  options << TOGGLE_OPTION
+  options.push TOGGLE_OPTION
 end
 
 # Serialize it carefully to the format gsettings expects
