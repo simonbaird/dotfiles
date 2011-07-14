@@ -18,6 +18,16 @@
 # Author: Simon Baird
 #
 
+USAGE = <<EOT
+Usage: gswapalt [<action>]
+
+Actions:
+  toggle (default) - Toggle the 'Swap Left Alt and Left Win' option
+  swap             - Set the 'Swap Left Alt and Left Win' option
+  unswap           - Clear the 'Swap Left Alt and Left Win' option
+  show             - Show the 'Swap Left Alt and Left Win' option
+EOT
+
 GET_CMD        = '/usr/bin/gsettings get'
 SET_CMD        = '/usr/bin/gsettings set'
 SETTING_PATH   = 'org.gnome.libgnomekbd.keyboard'
@@ -71,15 +81,7 @@ when 'show'
   # `lsusb | grep something`?
 
 else
-  puts <<-EOT
-Usage: gswapalt [<action>]
-
-Actions:
-  toggle (default) - Toggle the 'Swap Left Alt and Left Win' option
-  swap             - Set the 'Swap Left Alt and Left Win' option
-  unswap           - Clear the 'Swap Left Alt and Left Win' option
-  show             - Show the 'Swap Left Alt and Left Win' option
-  EOT
+  puts USAGE
   exit
 
 end
