@@ -1,0 +1,40 @@
+#!/usr/bin/env ruby
+
+GET_CMD       = '/usr/bin/gsettings get'
+SET_CMD       = '/usr/bin/gsettings set'
+SETTING_PATH  = 'org.gnome.libgnomekbd.keyboard'
+SETTING_KEY   = 'options'
+TOGGLE_OPTION = 'altwin\taltwin:swap_lalt_lwin'
+
+# Read current settings
+# We get a serialised GVariant
+#
+# Examples of how it looks:
+#  ['caps\tcaps:ctrl_modifier', 'altwin\taltwin:swap_lalt_lwin']
+#  ['caps\tcaps:ctrl_modifier']
+#  @as []
+#
+# This is close enough to ruby that we can eval it ;)
+# When there are no options set we get an extra @as, not sure why
+current_options = eval `#{GET_CMD} #{SETTING_PATH} #{SETTING_KEY}`.chomp.sub(/@as /,'')
+
+# Toggle the swap_lalt_lwin option
+if current_options.include? TOGGLE_OPTION
+  # Remove option
+  status = 'UNSWAPPED'
+  new_options = current_options.reject{ |opt| opt == TOGGLE_OPTION }
+else
+  # Add option
+  status = 'SWAPPED'
+  new_options = current_options << TOGGLE_OPTION
+end
+
+# Serialize it carefully to the format gsettings expects
+serialized = "[#{new_options.map{ |opt| "'#{opt}'" }.join(', ')}]"
+
+# Write it back
+do_it = "#{SET_CMD} #{SETTING_PATH} #{SETTING_KEY} \"#{serialized}\""
+#puts do_it
+`#{do_it}`
+
+puts "Left Alt/Win now #{status}"

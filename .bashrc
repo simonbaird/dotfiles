@@ -1,13 +1,11 @@
-# Source global definitions
-if [ -f /etc/bashrc ]; then
-  . /etc/bashrc
-fi
+# global definitions
+[[ -s /etc/bashrc ]] && source /etc/bashrc
 
 # For rvm
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
 
 # Git completion
-source "$HOME/.git-completion.bash"
+[[ -s "$HOME/.git-completion.bash" ]] && source "$HOME/.git-completion.bash"
 
 # Prompt
 YELLOW='\[\033[01;33m\]'
@@ -19,7 +17,6 @@ NOCOLOR='\[\033[00m\]'
 
 #PS1='\u:\w> '
 PS1="$GREEN\w>$NOCOLOR "
-
 PROMPT_COMMAND='printf "%*s\r" "$COLUMNS" "`show_git_branch` "'
 
 # Aliases

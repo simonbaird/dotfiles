@@ -19,6 +19,7 @@ edalias() {
 #
 # When starting gvim without a file want to run CommandT
 # (There's probably a way to do this in .vimrc)
+# (TODO: Slightly broken for files with spaces in their names)
 #
 vi() {
   if [ -n "$1" ]; then
@@ -27,6 +28,13 @@ vi() {
     gvim -c 'CommandT'
   fi
 }
+
+term() {
+  gnome-terminal --profile=$1
+}
+
+# Eg, some_command | pipevim
+alias pipevim='vim -R -'
 
 #
 # Rails shortcuts
@@ -119,4 +127,3 @@ nuke_branch() {
     echo ""
   done
 }
-

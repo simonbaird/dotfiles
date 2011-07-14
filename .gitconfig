@@ -11,7 +11,7 @@
   default = tracking
 
 [core]
-  editor = vim -f
+  editor = gvim -f
 
 [alias]
 
@@ -33,7 +33,7 @@
   newbranch = checkout -b
   newtrack = branch --track
 
-  # Ville's, not sure yet..
+  # Ville's, not sure exactly...
   wup = log -p origin..@{0}
   wu = log --stat origin..@{0}
 
