@@ -18,11 +18,14 @@
 # Author: Simon Baird
 #
 
-GET_CMD       = '/usr/bin/gsettings get'
-SET_CMD       = '/usr/bin/gsettings set'
-SETTING_PATH  = 'org.gnome.libgnomekbd.keyboard'
-SETTING_KEY   = 'options'
-TOGGLE_OPTION = 'altwin\taltwin:swap_lalt_lwin'
+GET_CMD        = '/usr/bin/gsettings get'
+SET_CMD        = '/usr/bin/gsettings set'
+SETTING_PATH   = 'org.gnome.libgnomekbd.keyboard'
+SETTING_KEY    = 'options'
+OPTION         = 'altwin\taltwin:swap_lalt_lwin'
+
+# What are we doing?
+action = ARGV[0] || 'toggle'
 
 # Read current settings
 # We get a serialised GVariant
@@ -35,21 +38,51 @@ TOGGLE_OPTION = 'altwin\taltwin:swap_lalt_lwin'
 # When there are no options set we get an extra @as, not sure why
 current_string = `#{GET_CMD} #{SETTING_PATH} #{SETTING_KEY}`.chomp.sub(/^@as /,'')
 
-# This is close enough to ruby that we can eval it.. ;)
-#options = eval current_string # this works. use this if you want to live dangerously...
+# This is close enough to ruby that we can eval it ;)
+#options = eval current_string # use this if you want to live dangerously...
 
-# ..but let's be cautious
+# ..but let's be sensible :)
 options = current_string.gsub(/(^\[|\]$)/,'').split(', ').map{ |opt| opt.gsub(/(^'|'$)/,'') }
 
-# Toggle the swap_lalt_lwin option
-if options.include? TOGGLE_OPTION
-  # Remove it
-  options.delete TOGGLE_OPTION
-else
-  # Add it
-  options.push TOGGLE_OPTION
-end
+initially_swapped = options.include?(OPTION)
 
+# Remove it first
+options.delete OPTION
+
+# Provide a few synonyms because why not...
+case action
+when 'unswap','clear','int' # int as in internal laptop keyboard
+  # (Stays removed)
+
+when 'swap','set','ext' # ext as in external apple keyboard
+  # Add it
+  options.push OPTION # Add it
+
+when 'toggle'
+  # Add it if wasn't there before
+  options.push(OPTION) if !initially_swapped
+
+when 'show'
+  # Add it if was there before
+  options.push(OPTION) if initially_swapped
+
+#when 'detect'
+  # TODO:
+  # `lsusb | grep something`?
+
+else
+  puts <<-EOT
+Usage: gswapalt [<action>]
+
+Actions:
+  toggle (default) - Toggle the 'Swap Left Alt and Left Win' option
+  swap             - Set the 'Swap Left Alt and Left Win' option
+  unswap           - Clear the 'Swap Left Alt and Left Win' option
+  show             - Show the 'Swap Left Alt and Left Win' option
+  EOT
+  exit
+
+end
 # Serialize it carefully to the format gsettings expects
 serialized = "[#{options.map{ |opt| "'#{opt}'" }.join(', ')}]"
 
@@ -58,4 +91,4 @@ do_it = "#{SET_CMD} #{SETTING_PATH} #{SETTING_KEY} \"#{serialized}\""
 #puts do_it
 `#{do_it}`
 
-puts "Left Alt/Win now #{options.include?(TOGGLE_OPTION) ? 'SWAPPED' : 'UNSWAPPED'}"
+puts "Left Alt/Win now #{options.include?(OPTION) ? 'SWAPPED' : 'UNSWAPPED'}"
