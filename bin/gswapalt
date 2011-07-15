@@ -42,7 +42,7 @@ SETTING_KEY   = 'options'
 GET_CMD       = "#{GSETTINGS} get #{SETTING_PATH} #{SETTING_KEY}"
 SET_CMD       = "#{GSETTINGS} set #{SETTING_PATH} #{SETTING_KEY} \"%s\""
 
-OPTION        = 'altwin\taltwin:swap_lalt_lwin'
+SWAP_OPT      = 'altwin\taltwin:swap_lalt_lwin'
 
 LSUSB         = '/usr/bin/lsusb'
 GREP          = '/bin/grep'
@@ -53,8 +53,9 @@ SWAPPED_MSG   = "SWAPPED (apple keyboard mode)"
 UNSWAPPED_MSG = "UNSWAPPED (laptop keyboard mode)"
 
 # Read options (Too lazy to use getoptlong...)
-QUIET = ARGV.delete('-q') || ARGV.delete('--quiet')
-DEBUG = ARGV.delete('-d') || ARGV.delete('--debug')
+QUIET  = ARGV.delete('-q') || ARGV.delete('--quiet')
+DEBUG  = ARGV.delete('-d') || ARGV.delete('--debug')
+DANGER = ARGV.delete('--danger') # :)
 
 # Read command
 action = ARGV[0] || 'auto'
@@ -68,42 +69,46 @@ action = ARGV[0] || 'auto'
 #  @as []
 #
 # When there are no options set we get an extra @as, not sure why
-current_string = `#{GET_CMD}`.chomp.sub(/^@as /,'')
-puts "Original: #{current_string}" if DEBUG
+original_string = `#{GET_CMD}`.chomp.sub(/^@as /,'')
+puts "Original: #{original_string}" if DEBUG
 
-# This is close enough to ruby that we can eval it ;)
-#options = eval current_string # use this if you want to live dangerously...
-
-# ..but let's be sensible :)
-options = current_string.gsub(/(^\[|\]$)/,'').split(', ').map{ |opt| opt.gsub(/(^'|'$)/,'') }
+if DANGER
+  # This is close enough to ruby that we can eval it ;)
+  puts "** INITIAL EVAL! ***" unless QUIET
+  options = eval original_string
+  puts "** EVAL COMPLETE! **" unless QUIET
+else
+  # Let's be sensible :)
+  options = original_string.gsub(/(^\[|\]$)/,'').split(', ').map{ |opt| opt.gsub(/(^'|'$)/,'') }
+end
 
 # Remember initial condition
-initially_swapped = options.include?(OPTION)
+initially_swapped = options.include? SWAP_OPT
 
 # Remove it first
-options.delete OPTION
+options.delete SWAP_OPT
 
 puts "Action: #{action}" if DEBUG
 # Provide a few synonyms because why not...
 case action
-when 'unswap','clear','int' # int as in internal laptop keyboard
+when 'unswap','clear'
   # (Stays removed)
 
-when 'swap','set','ext' # ext as in external apple keyboard
+when 'swap','set'
   # Add it
-  options.push OPTION
+  options.push SWAP_OPT
 
 when 'toggle'
   # Add it if wasn't there before
-  options.push(OPTION) if !initially_swapped
+  options.push(SWAP_OPT) if !initially_swapped
 
 when 'show'
   # Add it if was there before
-  options.push(OPTION) if initially_swapped
+  options.push(SWAP_OPT) if initially_swapped
 
 when 'auto'
   apple_keyboard_present = !`#{DETECT_CMD}`.strip.empty?
-  options.push(OPTION) if apple_keyboard_present
+  options.push(SWAP_OPT) if apple_keyboard_present
 
 else
   puts USAGE
@@ -118,4 +123,4 @@ serialized = "[#{options.map{ |opt| "'#{opt}'" }.join(', ')}]"
 
 puts "Updated: #{serialized}" if DEBUG
 
-puts STATUS_MSG % (options.include?(OPTION) ? SWAPPED_MSG : UNSWAPPED_MSG) unless QUIET
+puts STATUS_MSG % (options.include?(SWAP_OPT) ? SWAPPED_MSG : UNSWAPPED_MSG) unless QUIET
