@@ -19,23 +19,45 @@
 #
 
 USAGE = <<EOT
-Usage: gswapalt [<action>]
+Usage: gswapalt [-q|--quiet] [-d|--debug] [<action>]
+
+Sets or clears the 'Swap Left Alt and Left Windows keys' option in
+Gnome 3's keyboard settings.
 
 Actions:
-  toggle (default) - Toggle the 'Swap Left Alt and Left Win' option
-  swap             - Set the 'Swap Left Alt and Left Win' option
-  unswap           - Clear the 'Swap Left Alt and Left Win' option
-  show             - Show the 'Swap Left Alt and Left Win' option
+  auto (default) - Set the option if a USB Apple Keyboard is detected, clear it otherwise
+  swap, set      - Set the option (swap the keys)
+  unswap, clear  - Clear the option (unswap the keys)
+  toggle         - Toggle the option
+  show           - Show the current setting without changing it
+
+Options:
+  -q, --quiet    - Supress output
+  -d, --debug    - Show debug info
 EOT
 
-GET_CMD        = '/usr/bin/gsettings get'
-SET_CMD        = '/usr/bin/gsettings set'
-SETTING_PATH   = 'org.gnome.libgnomekbd.keyboard'
-SETTING_KEY    = 'options'
-OPTION         = 'altwin\taltwin:swap_lalt_lwin'
+GSETTINGS     = '/usr/bin/gsettings'
+SETTING_PATH  = 'org.gnome.libgnomekbd.keyboard'
+SETTING_KEY   = 'options'
+GET_CMD       = "#{GSETTINGS} get #{SETTING_PATH} #{SETTING_KEY}"
+SET_CMD       = "#{GSETTINGS} set #{SETTING_PATH} #{SETTING_KEY} \"%s\""
 
-# What are we doing?
-action = ARGV[0] || 'toggle'
+OPTION        = 'altwin\taltwin:swap_lalt_lwin'
+
+LSUSB         = '/usr/bin/lsusb'
+GREP          = '/bin/grep'
+DETECT_CMD    = "#{LSUSB} | #{GREP} 'Apple, Inc' | #{GREP} 'Keyboard'"
+
+STATUS_MSG    = "Left Alt/Win keys now %s"
+SWAPPED_MSG   = "SWAPPED (apple keyboard mode)"
+UNSWAPPED_MSG = "UNSWAPPED (laptop keyboard mode)"
+
+# Read options (Too lazy to use getoptlong...)
+QUIET = ARGV.delete('-q') || ARGV.delete('--quiet')
+DEBUG = ARGV.delete('-d') || ARGV.delete('--debug')
+
+# Read command
+action = ARGV[0] || 'auto'
 
 # Read current settings
 # We get a serialised GVariant
@@ -46,7 +68,8 @@ action = ARGV[0] || 'toggle'
 #  @as []
 #
 # When there are no options set we get an extra @as, not sure why
-current_string = `#{GET_CMD} #{SETTING_PATH} #{SETTING_KEY}`.chomp.sub(/^@as /,'')
+current_string = `#{GET_CMD}`.chomp.sub(/^@as /,'')
+puts "Original: #{current_string}" if DEBUG
 
 # This is close enough to ruby that we can eval it ;)
 #options = eval current_string # use this if you want to live dangerously...
@@ -54,11 +77,13 @@ current_string = `#{GET_CMD} #{SETTING_PATH} #{SETTING_KEY}`.chomp.sub(/^@as /,'
 # ..but let's be sensible :)
 options = current_string.gsub(/(^\[|\]$)/,'').split(', ').map{ |opt| opt.gsub(/(^'|'$)/,'') }
 
+# Remember initial condition
 initially_swapped = options.include?(OPTION)
 
 # Remove it first
 options.delete OPTION
 
+puts "Action: #{action}" if DEBUG
 # Provide a few synonyms because why not...
 case action
 when 'unswap','clear','int' # int as in internal laptop keyboard
@@ -66,7 +91,7 @@ when 'unswap','clear','int' # int as in internal laptop keyboard
 
 when 'swap','set','ext' # ext as in external apple keyboard
   # Add it
-  options.push OPTION # Add it
+  options.push OPTION
 
 when 'toggle'
   # Add it if wasn't there before
@@ -76,9 +101,9 @@ when 'show'
   # Add it if was there before
   options.push(OPTION) if initially_swapped
 
-#when 'detect'
-  # TODO:
-  # `lsusb | grep something`?
+when 'auto'
+  apple_keyboard_present = !`#{DETECT_CMD}`.strip.empty?
+  options.push(OPTION) if apple_keyboard_present
 
 else
   puts USAGE
@@ -89,8 +114,8 @@ end
 serialized = "[#{options.map{ |opt| "'#{opt}'" }.join(', ')}]"
 
 # Write it back
-do_it = "#{SET_CMD} #{SETTING_PATH} #{SETTING_KEY} \"#{serialized}\""
-#puts do_it
-`#{do_it}`
+`#{SET_CMD % serialized}`
 
-puts "Left Alt/Win now #{options.include?(OPTION) ? 'SWAPPED' : 'UNSWAPPED'}"
+puts "Updated: #{serialized}" if DEBUG
+
+puts STATUS_MSG % (options.include?(OPTION) ? SWAPPED_MSG : UNSWAPPED_MSG) unless QUIET
