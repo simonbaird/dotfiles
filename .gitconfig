@@ -23,8 +23,10 @@
   ap = add --patch
 
   # Shortcuts
-  s = status -sb
-  st = status -sb
+  #s = status -sb
+  #st = status -sb
+  s = status
+  st = status
   c = checkout
   b = branch
   d = diff
