@@ -5,12 +5,15 @@
 # the left alt key so that your fingers can "alt-tab" easily.
 #
 # But when you're using your laptop's internal keyboard you
-# need to swap them back. You can do this in about 10 clicks
+# need to swap them back. You can do this in about 15 clicks
 # via the gnome 3 systems settings 'Region and Language' control
-# panel. Or you can use this script.
+# panel, or you can use this script.
 #
-# Run this to toggle between swapped and unswapped for the left alt,
-# left windows key (or the command key on an apple keyboard).
+# The default command (auto) will try to detect if you have
+# an external apple keyboard attached via usb and set swap the
+# keys accordingly, so you should be able to put this in your
+# bashrc or gnome session startup (?) with the --quiet switch
+# and forget about it.
 #
 # Latest version here:
 # https://github.com/simonbaird/dotfiles/blob/master/bin/gswapalt
@@ -112,7 +115,6 @@ when 'auto'
 else
   puts USAGE
   exit
-
 end
 
 # Serialize it carefully to the format gsettings expects
@@ -120,7 +122,7 @@ serialized = "[#{options.map{ |opt| "'#{opt}'" }.join(', ')}]"
 
 # Write it back
 `#{SET_CMD % serialized}`
-
 puts "Updated: #{serialized}" if DEBUG
 
+# Show status
 puts STATUS_MSG % (options.include?(SWAP_OPT) ? SWAPPED_MSG : UNSWAPPED_MSG) unless QUIET
