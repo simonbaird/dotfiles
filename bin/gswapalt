@@ -74,7 +74,7 @@ puts "Original: #{original_string}" if DEBUG
 
 if DANGER
   # This is close enough to ruby that we can eval it ;)
-  puts "** INITIAL EVAL! ***" unless QUIET
+  puts "** INITIATE EVAL SEQUENCE! **" unless QUIET
   options = eval original_string
   puts "** EVAL COMPLETE! **" unless QUIET
 else
