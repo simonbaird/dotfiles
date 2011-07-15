@@ -89,7 +89,6 @@ initially_swapped = options.include? SWAP_OPT
 options.delete SWAP_OPT
 
 puts "Action: #{action}" if DEBUG
-# Provide a few synonyms because why not...
 case action
 when 'unswap','clear'
   # (Stays removed)
@@ -115,6 +114,7 @@ else
   exit
 
 end
+
 # Serialize it carefully to the format gsettings expects
 serialized = "[#{options.map{ |opt| "'#{opt}'" }.join(', ')}]"
 
