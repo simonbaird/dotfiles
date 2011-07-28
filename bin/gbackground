@@ -1,0 +1,82 @@
+#!/bin/bash
+#
+# Set your background wallpaper in Gnome 3
+#
+# Takes one argument. If that argument is a file then presumes the file is an
+# image and uses that file as the background. If the first argument is a
+# directory then it uses a random file from that directory.
+#
+# It will also try to guess whether to use "zoom" or "spanned" mode for the
+# background. If you have multiple monitors and the the image is wide enough
+# it will use "spanned" mode. Disable that by using nospan as the second param.
+#
+# Requires identify from ImageMagick. You can get this using:
+#  $ sudo yum install ImageMagick
+#
+# Example usage:
+#  $ gbackground ~/Pictures/Wallpapers
+#  $ gbackground ~/Pictures/Wallpapers/octocat.jpg
+#  $ gbackground ~/Pictures/Wallpapers/octocat.jpg nospan
+#
+# Latest version here:
+# https://github.com/simonbaird/dotfiles/blob/master/bin/gbackground
+#
+# Author: Simon Baird
+#
+#DEBUG=true
+
+# Tweak this if you have different size screens
+SCREEN_HEIGHT=1920
+SCREEN_WIDTH=1200
+NUM_SCREENS=2
+
+MIN_ASPECT_FOR_SPANNED=" $NUM_SCREENS * $SCREEN_HEIGHT / $SCREEN_WIDTH "
+
+# Args
+IMAGE_FILE=$1
+NOSPAN_OPTION=$2
+
+if [ ! -n "$IMAGE_FILE" ]; then
+  echo "You must specify a file or a directory."
+  exit
+fi
+
+if [ -d $IMAGE_FILE ]; then
+  # It's a directory so pick a random file
+  IMAGE_FILE="$IMAGE_FILE/`ls $IMAGE_FILE | sort -R | head -1`"
+fi
+
+# Get the full absolute path
+IMAGE_FILE=`readlink -f $IMAGE_FILE`
+
+#
+# If you don't have identify then do:
+#  $ sudo yum install ImageMagick
+#
+HEIGHT=`identify -format '%h' $IMAGE_FILE`
+WIDTH=`identify -format '%w' $IMAGE_FILE`
+
+ASPECT_RATIO=`echo "scale = 2; $WIDTH / $HEIGHT" | bc `
+USE_SPANNED=`echo "scale = 2; ($WIDTH / $HEIGHT) >= ($MIN_ASPECT_FOR_SPANNED)" | bc | head -c1`
+
+# How many screens? (Is this good enough?)
+SCREEN_COUNT=`xrandr |grep ' connected ' | wc -l | head -c1`
+
+if [ -n "$DEBUG" ]; then
+  echo "File: $IMAGE_FILE"
+  echo "Image width: $WIDTH"
+  echo "Image aspect: $ASPECT_RATIO"
+  echo "Screens found: $SCREEN_COUNT"
+  echo "Spannable?: $USE_SPANNED"
+fi
+
+# Want to guess whether to use zoom or spanned...
+# (sadly there is no zoom_spanned mode afaict)
+if [ "$USE_SPANNED" = "1" -a "$SCREEN_COUNT" -gt "1" -a "$NOSPAN_OPTION" != 'nospan' ]; then
+  WALLPAPER_MODE=spanned
+else
+  WALLPAPER_MODE=zoom
+fi
+
+gsettings set org.gnome.desktop.background picture-uri "file://$IMAGE_FILE"
+gsettings set org.gnome.desktop.background picture-options $WALLPAPER_MODE
