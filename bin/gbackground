@@ -78,5 +78,16 @@ else
   WALLPAPER_MODE=zoom
 fi
 
+# When running from cron we don't know the display.
+[ ! -n "$DISPLAY" ] && \
+  # Stole this from here: http://www.entirelyunlike.net/?p=66
+  export DISPLAY="$(cat /proc/$(pgrep -u `whoami` gnome-session)/environ | tr "\0" "\n" | grep DISPLAY | cut -d'=' -f2 )"
+
+[ ! -n "$DISPLAY" ] && echo "Unable to find DISPLAY" && exit
+
+
 gsettings set org.gnome.desktop.background picture-uri "file://$IMAGE_FILE"
 gsettings set org.gnome.desktop.background picture-options $WALLPAPER_MODE
+
+# Just for fun
+notify-send "Wallpaper changed" "Image: `basename $IMAGE_FILE`\nMode: $WALLPAPER_MODE"
