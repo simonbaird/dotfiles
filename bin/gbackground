@@ -14,6 +14,7 @@
 #  $ sudo yum install ImageMagick
 #
 # Example usage:
+#  $ gbackground
 #  $ gbackground ~/Pictures/Wallpapers
 #  $ gbackground ~/Pictures/Wallpapers/octocat.jpg
 #  $ gbackground ~/Pictures/Wallpapers/octocat.jpg nospan
@@ -21,9 +22,15 @@
 # Latest version here:
 # https://github.com/simonbaird/dotfiles/blob/master/bin/gbackground
 #
+# TODO:
+#  - use getopt for nospan arg
+#
 # Author: Simon Baird
 #
 #DEBUG=true
+
+# Tweak this to where you keep your wallpapers
+DEFAULT_FOLDER=~/Pictures/Wallpapers
 
 # Tweak this if you have different size screens
 SCREEN_HEIGHT=1920
@@ -35,6 +42,8 @@ MIN_ASPECT_FOR_SPANNED=" $NUM_SCREENS * $SCREEN_HEIGHT / $SCREEN_WIDTH "
 # Args
 IMAGE_FILE=$1
 NOSPAN_OPTION=$2
+
+[ ! -n "$IMAGE_FILE" ] && IMAGE_FILE=$DEFAULT_FOLDER
 
 if [ ! -n "$IMAGE_FILE" ]; then
   echo "You must specify a file or a directory."
@@ -49,12 +58,16 @@ fi
 # Get the full absolute path
 IMAGE_FILE=`readlink -f $IMAGE_FILE`
 
-#
 # If you don't have identify then do:
 #  $ sudo yum install ImageMagick
-#
-HEIGHT=`identify -format '%h' $IMAGE_FILE`
-WIDTH=`identify -format '%w' $IMAGE_FILE`
+
+HEIGHT=`identify -format '%h' $IMAGE_FILE 2>/dev/null`
+WIDTH=`identify -format '%w' $IMAGE_FILE 2>/dev/null`
+
+if [ ! -n "$HEIGHT" ]; then
+  echo "$IMAGE_FILE doesn't seem to be an image"
+  exit
+fi
 
 ASPECT_RATIO=`echo "scale = 2; $WIDTH / $HEIGHT" | bc `
 USE_SPANNED=`echo "scale = 2; ($WIDTH / $HEIGHT) >= ($MIN_ASPECT_FOR_SPANNED)" | bc | head -c1`
@@ -90,4 +103,4 @@ gsettings set org.gnome.desktop.background picture-uri "file://$IMAGE_FILE"
 gsettings set org.gnome.desktop.background picture-options $WALLPAPER_MODE
 
 # Just for fun
-notify-send "Wallpaper changed" "Image: `basename $IMAGE_FILE`\nMode: $WALLPAPER_MODE"
+notify-send --icon="$IMAGE_FILE" "Wallpaper changed" "Image: `basename $IMAGE_FILE`\nMode: $WALLPAPER_MODE"
