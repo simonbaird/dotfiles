@@ -1,8 +1,9 @@
 #!/bin/bash
 
-echo 'Sourcing ~/.bash_aliases'
+#echo 'Sourcing ~/.bash_aliases'
 
 alias la='ls -la'
+alias vi=gvim
 
 #
 # Handy macro to edit this file and reload it.
@@ -21,16 +22,20 @@ edalias() {
 # (There's probably a way to do this in .vimrc)
 # (TODO: Slightly broken for files with spaces in their names)
 #
-vi() {
-  if [ -n "$1" ]; then
-    gvim $*
-  else
-    gvim -c 'CommandT'
-  fi
-}
+#vi() {
+#  if [ -n "$1" ]; then
+#    gvim "$*"
+#  else
+#    gvim -c 'CommandT'
+#  fi
+#}
+
+#term() {
+#  gnome-terminal --profile=$1
+#}
 
 term() {
-  gnome-terminal --profile=$1
+  roxterm --tab --profile=$1
 }
 
 # Eg, some_command | pipevim

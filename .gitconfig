@@ -31,6 +31,8 @@
   b = branch
   d = diff
   sd = diff --staged
+  wdiff = diff --color-words
+  wd = diff --color-words
   ld = log -p
   newbranch = checkout -b
   newtrack = branch --track

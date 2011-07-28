@@ -22,3 +22,6 @@ PROMPT_COMMAND='printf "%*s\r" "$COLUMNS" "`show_git_branch` "'
 # Aliases
 [[ -s "$HOME/.bash_aliases" ]] && source "$HOME/.bash_aliases"
 [[ -s "$HOME/.bash_aliases_local" ]] && source "$HOME/.bash_aliases_local"
+
+# fix vim in roxterm?
+TERM=xterm-256color
