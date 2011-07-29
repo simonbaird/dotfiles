@@ -43,6 +43,13 @@ MIN_ASPECT_FOR_SPANNED=" $NUM_SCREENS * $SCREEN_HEIGHT / $SCREEN_WIDTH "
 IMAGE_FILE=$1
 NOSPAN_OPTION=$2
 
+# When running from cron we don't know the display.
+[ ! -n "$DISPLAY" ] && \
+  # Stole this from here: http://www.entirelyunlike.net/?p=66
+  export DISPLAY="$(cat /proc/$(pgrep -u `whoami` gnome-session)/environ | tr "\0" "\n" | grep DISPLAY | cut -d'=' -f2 )"
+
+[ ! -n "$DISPLAY" ] && echo "Unable to find DISPLAY" && exit
+
 [ ! -n "$IMAGE_FILE" ] && IMAGE_FILE=$DEFAULT_FOLDER
 
 if [ ! -n "$IMAGE_FILE" ]; then
@@ -52,6 +59,7 @@ fi
 
 if [ -d $IMAGE_FILE ]; then
   # It's a directory so pick a random file
+  # (How good is sort -R !?)
   IMAGE_FILE="$IMAGE_FILE/`ls $IMAGE_FILE | sort -R | head -1`"
 fi
 
@@ -61,10 +69,10 @@ IMAGE_FILE=`readlink -f $IMAGE_FILE`
 # If you don't have identify then do:
 #  $ sudo yum install ImageMagick
 
-HEIGHT=`identify -format '%h' $IMAGE_FILE 2>/dev/null`
-WIDTH=`identify -format '%w' $IMAGE_FILE 2>/dev/null`
+HEIGHT=`identify -format '%h' $IMAGE_FILE 2> /dev/null`
+WIDTH=`identify -format '%w' $IMAGE_FILE 2> /dev/null`
 
-if [ ! -n "$HEIGHT" ]; then
+if [ ! -n "$HEIGHT" -o ! -n "$WIDTH" ]; then
   echo "$IMAGE_FILE doesn't seem to be an image"
   exit
 fi
@@ -73,7 +81,7 @@ ASPECT_RATIO=`echo "scale = 2; $WIDTH / $HEIGHT" | bc `
 USE_SPANNED=`echo "scale = 2; ($WIDTH / $HEIGHT) >= ($MIN_ASPECT_FOR_SPANNED)" | bc | head -c1`
 
 # How many screens? (Is this good enough?)
-SCREEN_COUNT=`xrandr |grep ' connected ' | wc -l | head -c1`
+SCREEN_COUNT=`xrandr | grep ' connected ' | wc -l | head -c1`
 
 if [ -n "$DEBUG" ]; then
   echo "File: $IMAGE_FILE"
@@ -90,14 +98,6 @@ if [ "$USE_SPANNED" = "1" -a "$SCREEN_COUNT" -gt "1" -a "$NOSPAN_OPTION" != 'nos
 else
   WALLPAPER_MODE=zoom
 fi
-
-# When running from cron we don't know the display.
-[ ! -n "$DISPLAY" ] && \
-  # Stole this from here: http://www.entirelyunlike.net/?p=66
-  export DISPLAY="$(cat /proc/$(pgrep -u `whoami` gnome-session)/environ | tr "\0" "\n" | grep DISPLAY | cut -d'=' -f2 )"
-
-[ ! -n "$DISPLAY" ] && echo "Unable to find DISPLAY" && exit
-
 
 gsettings set org.gnome.desktop.background picture-uri "file://$IMAGE_FILE"
 gsettings set org.gnome.desktop.background picture-options $WALLPAPER_MODE
