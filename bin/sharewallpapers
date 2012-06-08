@@ -1,0 +1,55 @@
+#!/bin/sh
+
+# In a few places I've used the full path..
+# In a few other places I've presumed we are in right local dir
+# (So beware...)
+WALLPAPER_DIR=/home/sbaird/Pictures/Wallpapers
+cd $WALLPAPER_DIR
+
+# Make thumbnails
+mkdir $WALLPAPER_DIR/thumbs
+
+# This one presumes current directory
+mogrify -path $WALLPAPER_DIR/thumbs -thumbnail 'x160' "$WALLPAPER_DIR/*.jpg"
+mogrify -path $WALLPAPER_DIR/thumbs -thumbnail 'x160' "$WALLPAPER_DIR/*.png"
+
+# Make index.html
+echo "<!DOCTYPE html>"                                                                                         >> index.html
+echo "<html>"                                                                                                  >> index.html
+echo "  <head>"                                                                                                >> index.html
+echo "    <style type='text/css'>"                                                                             >> index.html
+echo "      body { background-color:#444;text-align:center;font-family:sans-serif;font-size:75%;color:#777; }" >> index.html
+echo "      a { color:#888; }"                                                                                 >> index.html
+echo "      a.thumb { display:inline-block;text-decoration:none; }"                                            >> index.html
+echo "      img { padding:3px; }"                                                                              >> index.html
+echo "    </style>"                                                                                            >> index.html
+echo "  </head>"                                                                                               >> index.html
+echo "  <body>"                                                                                                >> index.html
+
+for f in *.png *.jpg; do
+  HEIGHT=`identify -format '%h' $f 2> /dev/null`
+  WIDTH=`identify -format '%w' $f 2> /dev/null`
+  THUMB_HEIGHT=`identify -format '%h' thumbs/$f 2> /dev/null`
+  THUMB_WIDTH=`identify -format '%w' thumbs/$f 2> /dev/null`
+  echo "<a class='thumb' href='$f'><img style='height:${THUMB_HEIGHT}px;width:${THUMB_WIDTH}px;' src='thumbs/$f' /><br/>$WIDTH &times; $HEIGHT</a>"
+done >> $WALLPAPER_DIR/index.html
+
+echo "    <p style='padding-top:3em;'>"                                                                 >> index.html
+echo "      (See also my <a href='https://github.com/simonbaird/dotfiles/blob/master/bin/gbackground'>" >> index.html
+echo "      gbackground script</a> for Gnome 3)"                                                        >> index.html
+echo "    </p>"                                                                                         >> index.html
+echo "  </body>"                                                                                        >> index.html
+echo "</html>"                                                                                          >> index.html
+
+chmod 644 $WALLPAPER_DIR/*.jpg
+chmod 644 $WALLPAPER_DIR/*.png
+chmod 644 $WALLPAPER_DIR/thumbs/*.jpg
+chmod 644 $WALLPAPER_DIR/thumbs/*.png
+
+# Copy up to public_html
+rsync -r $WALLPAPER_DIR/. file:public_html/wallpaper-collection
+rsync -r $WALLPAPER_DIR/. dreamhost:ri/site/wallpaper-collection
+
+# Clean up the scraps so directory is clean
+rm $WALLPAPER_DIR/index.html
+rm -rf $WALLPAPER_DIR/thumbs
