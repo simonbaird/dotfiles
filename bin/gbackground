@@ -49,6 +49,10 @@ if [ "$IMAGE_FILE" = "new" ]; then
   # If you find a new wallpaper and you want to load it imediately...
   SORT_CMD='cat'
   unset IMAGE_FILE
+elif [[ "$IMAGE_FILE" == http* ]]; then
+  NEW_IMAGE_FILE=/tmp/`date +%s`-gbackground-download.jpg # might not be jpeg lol
+  wget -q $IMAGE_FILE -O $NEW_IMAGE_FILE
+  IMAGE_FILE=$NEW_IMAGE_FILE
 else
   # Random
   SORT_CMD='sort -R'
