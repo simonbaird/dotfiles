@@ -4,29 +4,36 @@
 #
 # Takes one argument. If that argument is a file then presumes the file is an
 # image and uses that file as the background. If the first argument is a
-# directory then it uses a random file from that directory.
+# directory then it uses a random file from that directory. If the argument
+# starts with "http" it will treat it as a url and try to fetch an image.
+# You can also set a default directory to use when no args are given (see below).
 #
-# It will also try to guess whether to use "zoom" or "spanned" mode for the
-# background. If you have multiple monitors and the the image is wide enough
+# It will also try to guess whether to use "zoom" or "spanned" or "tiled" mode
+# for the background. If you have multiple monitors and the the image is wide enough
 # it will use "spanned" mode. Disable that by using nospan as the second param.
+# If the image is small it will tile it.
 #
 # Requires identify from ImageMagick. You can get this using:
 #  $ sudo yum install ImageMagick
 #
 # Example usage:
 #  $ gbackground
+#  $ gbackground new
 #  $ gbackground ~/Pictures/Wallpapers
 #  $ gbackground ~/Pictures/Wallpapers/octocat.jpg
 #  $ gbackground ~/Pictures/Wallpapers/octocat.jpg nospan
+#  $ gbackground http://assets.warpspire.com/images/github/octocat.png
 #
 # Latest version here:
-# https://github.com/simonbaird/dotfiles/blob/master/bin/gbackground
+#   https://github.com/simonbaird/dotfiles/blob/master/bin/gbackground
 #
 # TODO:
-#  - use getopt for nospan arg
+#  - use getopt maybe
 #
 # Author: Simon Baird
 #
+#------------------------------------------------------------------
+
 #DEBUG=true
 
 # Tweak this to where you keep your wallpapers
@@ -36,7 +43,11 @@ DEFAULT_FOLDER=~/Pictures/Wallpapers
 SCREEN_HEIGHT=1920
 SCREEN_WIDTH=1200
 NUM_SCREENS=2
+
+# Tweak this for to adjust when to tile.
 TILE_IF_LESS_THAN=600
+
+#------------------------------------------------------------------
 
 MIN_ASPECT_FOR_SPANNED=" $NUM_SCREENS * $SCREEN_HEIGHT / $SCREEN_WIDTH "
 
@@ -50,8 +61,8 @@ if [ "$IMAGE_FILE" = "new" ]; then
   SORT_CMD='cat'
   unset IMAGE_FILE
 elif [[ "$IMAGE_FILE" == http* ]]; then
-  NEW_IMAGE_FILE=/tmp/`date +%s`-gbackground-download.jpg # might not be jpeg lol
-  wget -q $IMAGE_FILE -O $NEW_IMAGE_FILE
+  NEW_IMAGE_FILE=/tmp/tmp-gbackground-download.jpg # might not be jpg lol
+  wget -q "$IMAGE_FILE" -O "$NEW_IMAGE_FILE"
   IMAGE_FILE=$NEW_IMAGE_FILE
 else
   # Random
@@ -114,7 +125,7 @@ fi
 # (sadly there is no zoom_spanned mode afaict)
 if [ "$USE_SPANNED" = "1" -a "$SCREEN_COUNT" -gt "1" -a "$NOSPAN_OPTION" != 'nospan' ]; then
   WALLPAPER_MODE=spanned
-elif [ $WIDTH -lt $TILE_IF_LESS_THAN -o $HEIGHT -lt $TILE_IF_LESS_THAN ]; then
+elif [ $WIDTH -le $TILE_IF_LESS_THAN -o $HEIGHT -le $TILE_IF_LESS_THAN ]; then
   WALLPAPER_MODE=wallpaper
 else
   WALLPAPER_MODE=zoom
