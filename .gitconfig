@@ -11,13 +11,16 @@
   default = tracking
 
 [core]
-  editor = gvim -f
+  editor = gvim -f +0
+  #editor = vi
 
 [alias]
 
   # Nice colourful log summaries
-  ll = "!git st; git --no-pager log --pretty='format:%Cred%cr %Cblue%h %Cgreen%cn:%Creset %s' -n30; echo"
+  ll = "!git st; git --no-pager log --pretty='format:%Cred%cr %Cblue%h %Cgreen%cn:%Creset %s' -n20; echo"
   lll = log --pretty='format:%Cred%cr %Cblue%h %Cgreen%cn:%Creset %s'
+  l = log -p
+  ld = log -p
 
   # The only way to do it...
   ap = add --patch
@@ -30,12 +33,18 @@
   c = checkout
   b = branch
   d = diff
+  ds = diff --staged
   sd = diff --staged
+
   wdiff = diff --color-words
   wd = diff --color-words
-  ld = log -p
+  swd = diff --staged --color-words
+
   newbranch = checkout -b
+  nb        = checkout -b
+
   newtrack = branch --track
+  nt       = branch --track
 
   # Ville's, not sure exactly...
   wup = log -p origin..@{0}
@@ -43,3 +52,21 @@
 
   # Previous branch. Sometimes this doesn't work like after a merge or something
   prev = checkout @{-1}
+
+  # https://gist.github.com/1501998
+  ph = log --graph --pretty=pretty-history --abbrev-commit --date=relative
+
+  branches-notsorted = "!sh -c 'git branch --list --no-color | \
+    sed -e \"s/*/ /\" | \
+    while read branch; do \
+      git log -1 --format=format:\"%ct %Cred$branch:%Cblue %s %Cgreen%h%Creset (%ar)\n\" $branch; \
+    done'"
+
+  branches = "!sh -c 'git branches-notsorted | sort | cut -d\" \" -f2-'"
+
+[pretty]
+  pretty-history = format:%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset
+
+[color "diff"]
+  # Makes git log -p easier to read
+	commit = yellow reverse
