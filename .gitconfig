@@ -11,14 +11,27 @@
   default = tracking
 
 [core]
-  editor = gvim -f +0
-  #editor = vi
+  #editor = gvim -v +0
+  editor = gvim --nofork +0
+  #editor = vim
+
+  # -E means less doesn't page if file smaller than one screen
+  # -F means less quits at end of file
+  # -r something to do with ansi colours, it fixes the %C(yellow)%+d coloring somehow
+  pager = less -E -F -r
+  excludesfile = ~/.gitignore-global
 
 [alias]
-
   # Nice colourful log summaries
-  ll = "!git st; git --no-pager log --pretty='format:%Cred%cr %Cblue%h %Cgreen%cn:%Creset %s' -n20; echo"
-  lll = log --pretty='format:%Cred%cr %Cblue%h %Cgreen%cn:%Creset %s'
+
+  ## old
+  #ll = "!git st; git --no-pager log --pretty='format:%Cred%cr %Cblue%h %Cgreen%cn:%Creset %s' -n20; echo"
+
+  ## new
+  ll = log --pretty=nice -n25
+  lll = log --pretty=nice
+  #ll = "!git rev-parse --abbrev-ref HEAD; git status -s; git log --pretty=nice -n20"
+
   l = log -p
   ld = log -p
 
@@ -31,10 +44,13 @@
   s = status
   st = status
   c = checkout
+  a = add
   b = branch
   d = diff
   ds = diff --staged
   sd = diff --staged
+  ca = commit --amend --no-edit
+  ff = merge --ff-only
 
   wdiff = diff --color-words
   wd = diff --color-words
@@ -55,18 +71,24 @@
 
   # https://gist.github.com/1501998
   ph = log --graph --pretty=pretty-history --abbrev-commit --date=relative
+  ph2 = log --graph --pretty=nice --abbrev-commit --date=relative
 
-  branches-notsorted = "!sh -c 'git branch --list --no-color | \
-    sed -e \"s/*/ /\" | \
-    while read branch; do \
-      git log -1 --format=format:\"%ct %Cred$branch:%Cblue %s %Cgreen%h%Creset (%ar)\n\" $branch; \
-    done'"
+  lg1 = log --graph --all --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(bold white)— %an%C(reset)%C(bold yellow)%d%C(reset)' --abbrev-commit --date=relative
+  lg2 = log --graph --all --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(bold white)— %an%C(reset)' --abbrev-commit
+  lg = lg1
 
-  branches = "!sh -c 'git branches-notsorted | sort | cut -d\" \" -f2-'"
+  #branches = "for-each-ref --sort=committerdate --format='%1B[32m%(committerdate:iso8601) %1B[34m%(committerdate:relative) %1B[0;m%(refname:short)' refs/heads/"
+  branches = "for-each-ref --sort=committerdate --format='%1B[34m%(committerdate:relative) %1B[0;m%(refname:short)' refs/heads/"
+  bb = "!git branches"
+
+  resetfile = checkout
 
 [pretty]
+  #nice = format:%Cblue%h %Cred%cr %C(cyan)%an%Creset/%Cgreen%cn%Creset - %s%C(yellow)%+d%Creset
+  nice = format:%Cblue%h %Cred%cr %Cgreen%an%Creset - %s%C(yellow)%d
+  #nice = format:%Cblue%h %Cred%cr %Cgreen%cn%Creset - %s%C(yellow)%+d%Creset
   pretty-history = format:%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset
 
 [color "diff"]
   # Makes git log -p easier to read
-	commit = yellow reverse
+  commit = yellow reverse
