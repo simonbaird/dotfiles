@@ -11,4 +11,4 @@ _show_git_branch() {
   [ ! -z $GIT_REPO ] && echo "[`basename $GIT_REPO`:$GIT_BRANCH] "
 }
 
-PS1="$_MAGENTA\h:$_GREEN\W> $_YELLOW\$(_show_git_branch)$_NOCOLOR"
+PS1="$_MAGENTA\h:$_GREEN\w> $_YELLOW\$(_show_git_branch)$_NOCOLOR"

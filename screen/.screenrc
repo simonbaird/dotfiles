@@ -1,3 +1,13 @@
+# Sessions
+screen -t 'code'    1
+screen -t 'code'    2
+screen -t 'console' 3
+screen -t 'server'  4
+screen -t 'test'    5
+screen -t 'deploy'  6
+screen -t 'log'     7
+screen -t 'db'      8
+screen -t 'etc'     9
 
 # ^a is for start of line, obvs..
 escape ^xx
@@ -11,7 +21,7 @@ hardstatus ignore
 # This one is a bit garish unless you can tweak your dark blue
 caption always "%{kk}%{Bb} %?%-Lw%?%{B}%{wk} %n*%f %t%?(%u)%? %{Bb}%?%+Lw %= %{Mm} %H %{Yy} %D %d/%m %{Gg} %C %a "
 
-# Toned down version, better on osx
+# Grey instead of blue
 #caption always "%{kk}%{kK} %?%-Lw%?%{k}%{wk} %n*%f %t%?(%u)%? %{kK}%?%+Lw %= %{kM} %H %{kY} %D %d/%m %{kG} %C %a "
 
 # This stops the terminal window resizing somehow
@@ -33,4 +43,3 @@ defscrollback 20000
 # Etc
 startup_message off
 vbell off
-
