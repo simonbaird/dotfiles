@@ -18,11 +18,8 @@ select 1
 # Use caption instead of hardstatus alwayslastline
 hardstatus ignore
 
-# This one is a bit garish unless you can tweak your dark blue
-caption always "%{kk}%{Bb} %?%-Lw%?%{B}%{wk} %n*%f %t%?(%u)%? %{Bb}%?%+Lw %= %{Mm} %H %{Yy} %D %d/%m %{Gg} %C %a "
-
-# Grey instead of blue
-#caption always "%{kk}%{kK} %?%-Lw%?%{k}%{wk} %n*%f %t%?(%u)%? %{kK}%?%+Lw %= %{kM} %H %{kY} %D %d/%m %{kG} %C %a "
+# Caption
+caption always "%{kk}%{kb} %?%-Lw%?%{B}%{wk} %n*%f %t%?(%u)%? %{kb}%?%+Lw %= %{kg} %H "
 
 # This stops the terminal window resizing somehow
 termcapinfo xterm|gnome* 'is=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;4;6l'
