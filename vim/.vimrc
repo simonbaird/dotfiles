@@ -13,6 +13,7 @@ Bundle 'vim-scripts/bufexplorer.zip'
 Bundle 'scrooloose/nerdtree'
 
 Bundle 'tpope/vim-fugitive'
+"Bundle 'airblade/vim-gitgutter'
 Bundle 'tpope/vim-rails'
 Bundle 'mileszs/ack.vim'
 
@@ -20,9 +21,12 @@ Bundle 'nathanaelkane/vim-indent-guides'
 Bundle 'scrooloose/nerdcommenter'
 Bundle 'vim-scripts/Align'
 
-Bundle 'kchmck/vim-coffee-script'
-Bundle 'groenewege/vim-less'
+Bundle 'plasticboy/vim-markdown'
+"Bundle 'kchmck/vim-coffee-script'
+"Bundle 'groenewege/vim-less'
+"Bundle 'derekwyatt/vim-scala'
 
+Bundle 'twerth/ir_black'
 Bundle 'nanotech/jellybeans.vim'
 
 "-------------------------------------------------------------------------------
@@ -111,14 +115,8 @@ set background=dark
 
 let g:zenburn_high_Contrast = 1
 
-"colorscheme koehler
-"colorscheme desert
-"colorscheme zenburn
-"colorscheme vilight
-"colorscheme vividchalk
-"colorscheme ir_black
-colorscheme jellybeans
-"colorscheme Tomorrow-Night-Bright
+"silent! colorscheme jellybeans
+silent! colorscheme ir_black
 
 "set directory=~/tmp
 
@@ -135,7 +133,7 @@ highlight Folded ctermbg=NONE ctermfg=green guibg=#000000 guifg=#313633
 set fillchars=fold:\
 
 " Make line numbers less in your face
-highlight LineNr cterm=NONE ctermbg=darkblue ctermfg=blue guifg=#313633 guibg=#111111
+highlight LineNr cterm=NONE ctermbg=NONE ctermfg=black guifg=#313633 guibg=#111111
 
 "-------------------------------------------------------------------------------
 " Gui Stuff
@@ -206,7 +204,7 @@ au BufNewFile,BufReadPre *.rb set tabstop=2 softtabstop=2 shiftwidth=2 expandtab
 au BufNewFile,BufReadPre *.scss set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 
 " python
-au BufNewFile,BufReadPre *.py set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
+au BufNewFile,BufReadPre *.py,pooltool,leaderboard set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 
 " no tabs for .dot
 au BufNewFile,BufReadPre *.dot set tabstop=2 softtabstop=2 shiftwidth=2 expandtab
@@ -217,7 +215,7 @@ au BufNewFile,BufReadPre *.pl set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 
 " markdown, want to have four space soft tabs and want to wrap when typing
 au BufNewFile,BufReadPre *.markdown,*.md set tabstop=4 softtabstop=4 shiftwidth=4 expandtab list tw=78
-au BufRead *.markdown,*.md set filetype=markdown
+au BufRead *.markdown,*.md set filetype=mkd
 
 " git config
 au BufNewFile,BufReadPre .gitconfig,*.git/config set tabstop=4 shiftwidth=4 softtabstop=4 noexpandtab nolist
@@ -228,6 +226,9 @@ au BufNewFile,BufReadPre *.java set tabstop=4 softtabstop=4 shiftwidth=4 expandt
 "-------------------------------------------------------------------------------
 " Gonna try some folding... Nah.
 " au BufNewFile,BufReadPre *.rb set foldmethod=indent foldlevel=1
+
+" Markdown plugin wants to start folded. Disable that.
+let g:vim_markdown_folding_disabled=1
 
 "-------------------------------------------------------------------------------
 " Some handy mappings
