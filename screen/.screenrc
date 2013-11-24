@@ -19,16 +19,17 @@ select 1
 hardstatus ignore
 
 # Caption
-caption always "%{kk}%{kb} %?%-Lw%?%{B}%{wk} %n*%f %t%?(%u)%? %{kb}%?%+Lw %= %{kg} %H "
+caption always "%{kk}%{wk} %?%-Lw%?%{kw} %n*%f %t%?(%u)%? %{wk}%?%+Lw %= %{gk} %H "
 
 # This stops the terminal window resizing somehow
-termcapinfo xterm|gnome* 'is=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;4;6l'
+#termcapinfo xterm|gnome* 'is=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;4;6l'
 
 # 256 colors??
 #termcapinfo xterm|gnome* 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
+term screen-256color
 
 # Allow bold colors??
-attrcolor b ".I"
+#attrcolor b ".I"
 
 # Erase background with current bg color
 # Need it for vim colorschemes with background color (maybe)
