@@ -115,8 +115,8 @@ set background=dark
 
 let g:zenburn_high_Contrast = 1
 
-"silent! colorscheme jellybeans
-silent! colorscheme ir_black
+"silent! colorscheme ir_black
+silent! colorscheme jellybeans
 
 "set directory=~/tmp
 
