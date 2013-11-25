@@ -19,7 +19,7 @@ select 1
 hardstatus ignore
 
 # Caption
-caption always "%{kk}%{wk} %?%-Lw%?%{kw} %n*%f %t%?(%u)%? %{wk}%?%+Lw %= %{gk} %H "
+caption always "%{kk}%{wK} %?%-Lw%?%{kw} %n*%f %t%?(%u)%? %{wK}%?%+Lw %= %{kK} %H "
 
 # This stops the terminal window resizing somehow
 #termcapinfo xterm|gnome* 'is=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;4;6l'
