@@ -266,10 +266,6 @@ autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#181818 ctermbg=none
 
 let g:indent_guides_enable_on_vim_startup = 1
 
-"-------------------------------------------------------------------------------
-" Non-standard Filetypes
-"
-au BufRead *.md set filetype=markdown
 
 "-------------------------------------------------------------------------------
 " Plugins
