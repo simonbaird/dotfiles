@@ -13,27 +13,14 @@
 
 [core]
   editor = vim
+  excludesfile = ~/.gitignore-global
 
   # -E means less doesn't page if file smaller than one screen
   # -F means less quits at end of file
   # -r something to do with ansi colours, it fixes the %C(yellow)%+d coloring somehow
   pager = less -E -F -r
-  excludesfile = ~/.gitignore-global
 
 [alias]
-  # Nice colourful log summaries
-
-  ## old
-  #ll = "!git st; git --no-pager log --pretty='format:%Cred%cr %Cblue%h %Cgreen%cn:%Creset %s' -n20; echo"
-
-  ## new
-  ll = log --pretty=nice -n25
-  lll = log --pretty=nice
-  #ll = "!git rev-parse --abbrev-ref HEAD; git status -s; git log --pretty=nice -n20"
-
-  l = log -p
-  ld = log -p
-
   # The only way to do it...
   ap = add --patch
 
@@ -62,25 +49,40 @@
   newtrack = branch --track
   nt = branch --track
 
-  # Previous branch. Sometimes this doesn't work like after a merge or something
+  # Previous branch
   prev = checkout @{-1}
+
+  resetfile = checkout
+
+  ld = log -p
 
   # https://gist.github.com/1501998
   ph = log --graph --pretty=pretty-history --abbrev-commit --date=relative
   ph2 = log --graph --pretty=nice --abbrev-commit --date=relative
-
   lg = log --graph --all --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(bold white)— %an%C(reset)%C(bold yellow)%d%C(reset)' --abbrev-commit --date=relative
   lg2 = log --graph --all --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(bold white)— %an%C(reset)' --abbrev-commit
 
-  bb = "for-each-ref --sort=committerdate --format='%1B[34m%(committerdate:relative) %1B[0;m%(refname:short)' refs/heads/"
+  # Nice list of branches by age
+  bb = "for-each-ref --sort=-committerdate --format='%1B[36m%(committerdate:relative) %1B[33m%(refname:short)%1B[0;m' refs/heads/"
 
-  resetfile = checkout
+  # Keep your branches organised
+  branch-name = rev-parse --abbrev-ref HEAD
+  branch-basename = "!git branch-name | rev | cut -d '/' -f 1 | rev"
+  mv-branch = "!f() { git branch -m $1/`git branch-basename`; }; f"
+
+  ## old way
+  lll = "log --pretty='format:%Cblue%h %C(cyan)%cr %Cgreen%an%Creset %s%C(yellow)%d %C(black)%cn%Creset'"
+  ## new way
+  #lll = log --pretty=nice
+  ll =  "!git lll -n 25"
 
 [pretty]
-  #nice = format:%Cblue%h %Cred%cr %C(cyan)%an%Creset/%Cgreen%cn%Creset - %s%C(yellow)%+d%Creset
-  nice = format:%Cblue%h %Cred%cr %Cgreen%an%Creset - %s%C(yellow)%d
+  nice = format:%Cblue%h %C(cyan)%cr %Cgreen%an%Creset %s%C(yellow)%d %C(black)%cn%Creset
   pretty-history = format:%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset
 
 [color "diff"]
   # Makes git log -p easier to read
   commit = yellow reverse
+
+[diff]
+  algorithm = patience
