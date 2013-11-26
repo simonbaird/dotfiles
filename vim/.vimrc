@@ -223,6 +223,9 @@ au BufNewFile,BufReadPre .gitconfig,*.git/config set tabstop=4 shiftwidth=4 soft
 " java
 au BufNewFile,BufReadPre *.java set tabstop=4 softtabstop=4 shiftwidth=4 expandtab list
 
+" commit messages
+au BufRead COMMIT_EDITMSG set tw=68
+
 "-------------------------------------------------------------------------------
 " Gonna try some folding... Nah.
 " au BufNewFile,BufReadPre *.rb set foldmethod=indent foldlevel=1
