@@ -1,4 +1,8 @@
 #!/bin/bash
+###
+### OLD STUFF TO BE RETIRED
+### (New stuff in bash/.bash_aliases)
+###
 
 #echo 'Sourcing ~/.bash_aliases'
 

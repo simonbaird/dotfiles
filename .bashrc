@@ -1,3 +1,8 @@
+###
+### OLD STUFF TO BE RETIRED
+### (New stuff in bash/.bashrc)
+###
+
 # global definitions
 [[ -s /etc/bashrc ]] && source /etc/bashrc
 
