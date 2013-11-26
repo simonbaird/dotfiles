@@ -1,7 +1,6 @@
 [user]
 	name = Simon Baird
 	email = simon.baird@gmail.com
-	#email = sbaird@redhat.com
 
 [color]
 	branch = auto
@@ -70,11 +69,13 @@
 	branch-basename = "!git branch-name | rev | cut -d '/' -f 1 | rev"
 	mv-branch = "!f() { git branch -m $1/`git branch-basename`; }; f"
 
-	## old way
-	lll = "log --pretty='format:%Cblue%h %C(cyan)%cr %Cgreen%an%Creset %s%C(yellow)%d %C(black)%cn%Creset'"
-	## new way
 	#lll = log --pretty=nice
-	ll =  "!git lll -n 25"
+	lll = "log --pretty='format:%Cblue%h %C(cyan)%cr %Cgreen%an%Creset %s%C(yellow)%d %C(black)%cn%Creset'"
+	ll = "!git lll -n 25"
+
+	email-rh = "config user.email sbaird@redhat.com"
+	email-sb = "config user.email simon.baird@gmail.com"
+	email = "config user.email"
 
 [pretty]
 	nice = format:%Cblue%h %C(cyan)%cr %Cgreen%an%Creset %s%C(yellow)%d %C(black)%cn%Creset
