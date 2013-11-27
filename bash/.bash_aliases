@@ -13,3 +13,17 @@ alias edalias='vim -f ~/.bash_aliases ~/.bash_aliases_local +all; source ~/.bash
 
 # Fresh dotfiles
 alias dotfiles_pull='cd ~/.dotfiles; git pull --ff-only'
+
+case `uname` in
+  Darwin*)
+
+    # http://apple.stackexchange.com/questions/39608/running-gnu-screen-with-256-colors-on-os-x-lion
+    alias screen='/usr/local/bin/screen'
+
+  ;;
+  Linux)
+
+
+
+  ;;
+esac
