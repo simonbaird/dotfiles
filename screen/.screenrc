@@ -25,7 +25,7 @@ caption always "%{kk}%{wK} %?%-Lw%?%{kw} %n*%f %t%?(%u)%? %{wK}%?%+Lw %= %{kK} %
 #termcapinfo xterm|gnome* 'is=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;4;6l'
 
 # 256 colors??
-#termcapinfo xterm|gnome* 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
+termcapinfo xterm|gnome* 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
 term screen-256color
 
 # Allow bold colors??
