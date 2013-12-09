@@ -14,6 +14,9 @@ alias edalias='vim -f ~/.bash_aliases ~/.bash_aliases_local +all; source ~/.bash
 # Fresh dotfiles
 alias dotfiles_pull='cd ~/.dotfiles; git pull --ff-only'
 
+alias kcurl='curl -u: --negotiate'
+alias gg='git grep -n'
+
 case `uname` in
   Darwin*)
 
