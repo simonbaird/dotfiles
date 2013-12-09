@@ -30,3 +30,7 @@ case `uname` in
 
   ;;
 esac
+
+rr() {
+  NO_FIXTURE_LOAD=1 REDGREEN=1 SILENCE_DEPRECATIONS=1 ruby -Ilib:test $*
+}
