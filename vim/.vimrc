@@ -198,7 +198,7 @@ set listchars=tab:▸\
 set list
 
 " no tabs for ruby
-au BufNewFile,BufReadPre *.rb set tabstop=2 softtabstop=2 shiftwidth=2 expandtab
+au BufNewFile,BufReadPre *.rb,*.erb set tabstop=2 softtabstop=2 shiftwidth=2 expandtab
 
 " ryan likes four spaces so let's place nice
 au BufNewFile,BufReadPre *.scss set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
