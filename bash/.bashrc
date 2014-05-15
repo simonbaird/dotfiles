@@ -1,5 +1,10 @@
-source ~/.dotfiles/bash/prompt.sh
-source ~/.dotfiles/bash/rvm.sh
-source ~/.dotfiles/vim/aliases.sh
-source ~/.bash_aliases
+DOTFILES=$HOME/.dotfiles
+
+source $DOTFILES/bash/prompt.sh
+source $DOTFILES/bash/rvm.sh
+
+for dir in vim git tmux bash; do
+  [[ -s $DOTFILES/$dir/aliases.sh ]] && source $DOTFILES/$dir/aliases.sh
+done
+
 [[ -s ~/.bash_aliases_local ]] && source ~/.bash_aliases_local
