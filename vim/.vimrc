@@ -40,6 +40,7 @@ set visualbell        " don't beep
 set t_vb=
 set ai                " auto indent
 set hidden            " buffer can be backgrounded without writing (?)
+set nojoinspaces      " don't want two spaces after a full stop
 
 " Intuitive backspacing in insert mode
 set backspace=indent,eol,start
@@ -287,8 +288,10 @@ map <Leader>p :bprev<CR>
 map <Leader>, <C-^>
 
 " shift-f does that clash with anything important?
-map <Leader>F :Ack 
-map <S-F> :Ack 
+"map <Leader>F :Ack 
+"map <S-F> :Ack 
+map <Leader>F :Ggrep 
+map <S-F> :Ggrep 
 
 " ConqueTerm
 let g:ConqueTerm_Syntax = 'ruby'
