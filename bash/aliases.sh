@@ -9,7 +9,10 @@ alias less='less -R'
 alias more='less -R'
 
 # Editing this file (note that it doesn't unalias anything)
-alias edalias='vim -f ~/.dotfiles/bash/aliases.sh ~/.bash_aliases_local +all; source ~/.dotfiles/bash/aliases.sh; source ~/.bash_aliases_local'
+edalias() {
+  vim -f ~/.dotfiles/bash/aliases.sh ~/.bash_aliases_local +all
+  source ~/.dotfiles/bash/aliases.sh; source ~/.bash_aliases_local
+}
 
 # Fresh dotfiles
 alias dotfiles_pull='cd ~/.dotfiles; git pull --ff-only'
@@ -23,16 +26,29 @@ rr() {
 
 case `uname` in
   Darwin*)
-    ### Mac only
+    ###--- Mac only
 
     # http://apple.stackexchange.com/questions/39608/running-gnu-screen-with-256-colors-on-os-x-lion
     alias screen='/usr/local/bin/screen'
 
   ;;
   Linux)
-    ### Linux only
+    ###--- Linux only
 
 
 
   ;;
+esac
+
+case `hostname` in
+  *.redhat.com)
+    ###--- Work only
+
+    filepub() {
+      scp "$1" file.bne.redhat.com:public_html
+      echo "http://file.bne.redhat.com/~$USER/$(basename "$1")"
+    }
+
+  ;;
+
 esac
