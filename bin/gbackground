@@ -131,8 +131,11 @@ else
   WALLPAPER_MODE=zoom
 fi
 
-gsettings set org.gnome.desktop.background picture-uri "file://$IMAGE_FILE"
-gsettings set org.gnome.desktop.background picture-options $WALLPAPER_MODE
+# Let's set the lock screen also
+for k in background screensaver; do
+  gsettings set org.gnome.desktop.$k picture-uri "file://$IMAGE_FILE"
+  gsettings set org.gnome.desktop.$k picture-options $WALLPAPER_MODE
+done
 
 # Just for fun
 #notify-send --icon="$IMAGE_FILE" --hint=int:transient:1 "Wallpaper changed" "Image: `basename $IMAGE_FILE`\nMode: $WALLPAPER_MODE"
