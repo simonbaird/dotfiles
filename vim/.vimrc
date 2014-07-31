@@ -1,34 +1,42 @@
 "-------------------------------------------------------------------------------
-" Setup Vundle
+" Vundle begin
+
 set nocompatible
 filetype off
 set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
-Bundle 'gmarik/vundle'
+call vundle#begin()
+Plugin 'gmarik/vundle'
 
 "-------------------------------------------------------------------------------
-" Plugins
-Bundle 'kien/ctrlp.vim'
-Bundle 'vim-scripts/bufexplorer.zip'
-Bundle 'scrooloose/nerdtree'
+" Vundle managed plugins
 
-Bundle 'tpope/vim-fugitive'
+Plugin 'kien/ctrlp.vim'
+Plugin 'vim-scripts/bufexplorer.zip'
+Plugin 'scrooloose/nerdtree'
+
+Plugin 'tpope/vim-fugitive'
 "Bundle 'airblade/vim-gitgutter'
-Bundle 'tpope/vim-rails'
-Bundle 'mileszs/ack.vim'
+Plugin 'tpope/vim-rails'
+Plugin 'mileszs/ack.vim'
 
-Bundle 'nathanaelkane/vim-indent-guides'
-Bundle 'scrooloose/nerdcommenter'
-Bundle 'vim-scripts/Align'
+Plugin 'nathanaelkane/vim-indent-guides'
+Plugin 'scrooloose/nerdcommenter'
+Plugin 'vim-scripts/Align'
 
-Bundle 'plasticboy/vim-markdown'
-Bundle 'chase/vim-ansible-yaml'
-"Bundle 'kchmck/vim-coffee-script'
-"Bundle 'groenewege/vim-less'
-"Bundle 'derekwyatt/vim-scala'
+Plugin 'plasticboy/vim-markdown'
+Plugin 'chase/vim-ansible-yaml'
+"Plugin 'kchmck/vim-coffee-script'
+"Plugin 'groenewege/vim-less'
+"Plugin 'derekwyatt/vim-scala'
 
-Bundle 'twerth/ir_black'
-Bundle 'nanotech/jellybeans.vim'
+Plugin 'twerth/ir_black'
+Plugin 'nanotech/jellybeans.vim'
+
+"-------------------------------------------------------------------------------
+" Vundle end
+
+call vundle#end()
+filetype plugin indent on
 
 "-------------------------------------------------------------------------------
 " Some basics
@@ -102,11 +110,6 @@ endif
 set showmode
 set showcmd
 
-"-------------------------------------------------------------------------------
-" Search
-
-set nohlsearch " don't highlight
-
 
 "-------------------------------------------------------------------------------
 " Colours
@@ -167,9 +170,9 @@ if has("gui_running")
   nmap <C-M-J> :let &guifont = substitute(&guifont, '\(\d\+\)$', '\=(submatch(1) - 1)', '')<CR>
   nmap <C-M-K> :let &guifont = substitute(&guifont, '\(\d\+\)$', '\=(submatch(1) + 1)', '')<CR>
 
-" To go fullscreen on startup:
-"  set fuoptions=maxvert,maxhorz
-"  au GUIEnter * set fullscreen
+  " To go fullscreen on startup:
+  "  set fuoptions=maxvert,maxhorz
+  "  au GUIEnter * set fullscreen
 
   "set columns=160 lines=57
   "
@@ -185,7 +188,6 @@ if has("gui_running")
   map  <M-v> "+p
   imap <M-v> "+pa
   map  <M-c> "+y
-
 
 endif
 
@@ -248,9 +250,7 @@ map B ebgUew
 "au FocusLost * :wa
 
 " Run this file as a ruby test
-" (Can also do :Rake from vim-rails plugin but it takes ages
-" because it init the test database etc)
-map <Leader>r :w<CR>:!NO_FIXTURE_LOAD=1 NO_REDGREEN=1 ruby -Ilib:test %<CR>
+map <Leader>r :w<CR>:!NO_FIXTURE_LOAD=1 ruby -Ilib:test %<CR>
 
 " Reselect visual block after indent/unindent
 "vnoremap < <gv
@@ -270,7 +270,6 @@ autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=#222222 ctermbg=none
 autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#181818 ctermbg=none
 
 let g:indent_guides_enable_on_vim_startup = 1
-
 
 "-------------------------------------------------------------------------------
 " Plugins
@@ -311,6 +310,10 @@ autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
 " Kill all trailing whitespace now
 map <Leader>s :%s/\s\+$//<CR>
 
+" ,p when you want to copy/paste without line numbers and visible tabs
+"map <Leader>p :set invnumber invlist<CR>
+map <Leader>p :set invnumber<CR>
+
 "-------------------------------------------------------------------------------
 " Hall of usefulness past
 
@@ -324,10 +327,6 @@ map <Leader>s :%s/\s\+$//<CR>
 
 " Run unit test on this file
 "map <C-C>r :!phpunit %<CR>
-
-" Control-C p when you want to copy/paste without line numbers and visible tabs
-"map <Leader>p :set invnumber invlist<CR>
-"map <Leader>p :set invnumber<CR>
 
 " Use nasm syntax highlighting
 "au BufNewFile,BufReadPre *.asm let b:asmsyntax='nasm'
