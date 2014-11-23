@@ -22,6 +22,7 @@ Bundle 'scrooloose/nerdcommenter'
 Bundle 'vim-scripts/Align'
 
 Bundle 'plasticboy/vim-markdown'
+Bundle 'chase/vim-ansible-yaml'
 "Bundle 'kchmck/vim-coffee-script'
 "Bundle 'groenewege/vim-less'
 "Bundle 'derekwyatt/vim-scala'
