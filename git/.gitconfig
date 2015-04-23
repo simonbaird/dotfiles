@@ -89,6 +89,16 @@
 	email-sb = "config user.email simon.baird@gmail.com"
 	email = "config user.email"
 
+	# In later gits you can use commit --fixup
+	fixup = "!f() { [ -n \"$1\" ] && git commit -m \"fixup! $( git log -n1 --format=%s \"$1\" )\"; }; f"
+
+	# Non-interactive autosquash
+	fastsquash = "!GIT_EDITOR=: git rebase -i --autosquash"
+
+	# Amend a commit in your history then rebase on top of it
+	amendany = "!f() { [ -n \"$1\" ] && rbparent=$( git log -n1 --format=%H \"$1^\" ) && git fixup \"$1\" && git fastsquash $rbparent; }; f"
+	amendparent = "!git amendany HEAD^"
+
 [pretty]
 	nice = format:%Cblue%h %C(cyan)%cr %Cgreen%an%Creset %s%C(yellow)%d %C(black)%cn%Creset
 	pretty-history = format:%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset
