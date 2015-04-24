@@ -2,7 +2,7 @@
 alias vi=vim
 
 # Eg `some_command | pipevim`
-alias pipevim='vim -R -'
+alias pipevim='vim - "+f stdin" "+set ro bt=nowrite"'
 
 # Less (with ansi colours)
 alias less='less -R'
