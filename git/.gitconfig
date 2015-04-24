@@ -53,12 +53,14 @@
 
 	resetfile = checkout
 
-	# when you just pushed to gerrit
-	rod = reset --hard origin/develop
+	# For when you just pushed to gerrit
+	rod = "![ $(git rev-parse --abbrev-ref HEAD) = 'develop' ] && git reset --hard origin/develop"
 
 	# Fetch change set (from gerrit) and check it out in a suitably named branch
 	# $1 is the gerrit, eg 'refs/changes/99/24999/2'
 	# $2 is an optional branch name suffix
+	# Will create a branch such as gerrit-33716-2,
+	# or gerrit-33716-2-foobar if you use the optional suffix
 	fcs = "!f() { [ -n \"$1\" ] && git fetch origin $1 && git checkout -b $( echo gerrit/$1-$2 | cut -d/ -f1,5,6 | sed 's/\\//-/g' | sed 's/\\-$//' ) FETCH_HEAD; }; f"
 
 	ld = log -p
@@ -70,7 +72,7 @@
 	lg2 = log --graph --all --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(bold white)— %an%C(reset)' --abbrev-commit
 
 	# Nice list of branches by age (newest at bottom)
-	bb = "for-each-ref --sort=committerdate --format='%1B[36m%(committerdate:relative) %1B[33m%(refname:short)%1B[0;m' refs/heads/"
+	bb = "for-each-ref --sort=committerdate --format='%1B[36m%(committerdate:relative) %1B[33m%(refname:short)%1B[0;m %(subject)' refs/heads/"
 
 	# Keep your branches organised
 	branch-name = rev-parse --abbrev-ref HEAD
