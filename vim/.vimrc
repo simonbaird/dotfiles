@@ -221,6 +221,9 @@ au BufNewFile,BufReadPre *.pl set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 au BufNewFile,BufReadPre *.markdown,*.md set tabstop=4 softtabstop=4 shiftwidth=4 expandtab list tw=78
 au BufRead *.markdown,*.md set filetype=mkd
 
+" Vagrantfile is ruby
+au BufRead Vagrantfile set filetype=ruby
+
 " git config
 au BufNewFile,BufReadPre .gitconfig,*.git/config set tabstop=4 shiftwidth=4 softtabstop=4 noexpandtab nolist
 
