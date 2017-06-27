@@ -293,8 +293,8 @@ map <Leader>, <C-^>
 " shift-f does that clash with anything important?
 "map <Leader>F :Ack 
 "map <S-F> :Ack 
-map <Leader>F :Ggrep 
-map <S-F> :Ggrep 
+map <Leader>F :copen<CR>:silent Ggrep 
+map <S-F> :copen<CR>:silent Ggrep 
 
 " ConqueTerm
 let g:ConqueTerm_Syntax = 'ruby'
