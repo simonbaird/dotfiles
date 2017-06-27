@@ -111,3 +111,4 @@
 
 [diff]
 	algorithm = patience
+	compactionHeuristic = true
