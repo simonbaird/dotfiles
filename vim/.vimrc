@@ -24,7 +24,7 @@ Plugin 'scrooloose/nerdcommenter'
 Plugin 'vim-scripts/Align'
 
 Plugin 'plasticboy/vim-markdown'
-Plugin 'chase/vim-ansible-yaml'
+Plugin 'pearofducks/ansible-vim'
 "Plugin 'kchmck/vim-coffee-script'
 "Plugin 'groenewege/vim-less'
 "Plugin 'derekwyatt/vim-scala'
