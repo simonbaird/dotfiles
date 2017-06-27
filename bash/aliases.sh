@@ -20,8 +20,11 @@ alias dotfiles_pull='cd ~/.dotfiles; git pull --ff-only'
 alias kcurl='curl -s -u: --negotiate'
 alias gg='git grep -n'
 
+alias rake='bundle exec rake'
+alias rails='bundle exec rails'
+
 rr() {
-  NO_FIXTURE_LOAD=1 SILENCE_DEPRECATIONS=1 ruby -Ilib:test $*
+  NO_FIXTURE_LOAD=1 SILENCE_DEPRECATIONS=1 bundle exec ruby -Ilib:test $*
 }
 
 case `uname` in
