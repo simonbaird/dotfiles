@@ -38,9 +38,9 @@
 	amend = commit --amend
 	ff = merge --ff-only
 
-	wdiff = diff --color-words
 	wd = diff --color-words
 	swd = diff --staged --color-words
+	wsd = diff --staged --color-words
 
 	newbranch = checkout -b
 	nb = checkout -b
