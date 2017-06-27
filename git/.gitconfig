@@ -80,8 +80,8 @@
 	mv-branch = "!f() { git branch -m $1/`git branch-basename`; }; f"
 
 	#lll = log --pretty=nice
-	lll = "log --pretty='format:%Cblue%h %C(cyan)%cr %Cgreen%an%Creset %s%C(yellow)%d %C(black)%cn%Creset'"
-	ll = "!git lll -n 25"
+	lll = log --pretty='format:%Cblue%h %C(cyan)%cr %Cgreen%an%Creset %s%C(yellow)%d %Creset'
+	ll = log -n20 --pretty='format:%Cblue%h %C(cyan)%cr %Cgreen%an%Creset %s%C(yellow)%d %Creset'
 
 	rbs = rebase -i --autosquash
 	rba = rebase --abort
