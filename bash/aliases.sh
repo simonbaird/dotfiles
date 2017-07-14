@@ -37,6 +37,7 @@ case `uname` in
   ;;
   Linux)
     ###--- Linux only
+    alias dnf='sudo dnf'
 
 
 
