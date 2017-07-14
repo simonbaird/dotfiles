@@ -1,37 +1,41 @@
-tm() {
-  tmux new -s rails -d
-  tmux new-window -t rails -n vim
-  tmux new-window -t rails -n console
-  tmux new-window -t rails -n log
-  tmux new-window -t rails -n test
-  tmux new-window -t rails -n server
-  tmux new-window -t rails -n deploy
-  tmux new-window -t rails -n db
-  tmux new-window -t rails -n dev
-  tmux new-window -t rails -n qe
-  tmux new-window -t rails -n stage
-  tmux new-window -t rails -n 'prod!'
-  tmux select-window -t :1
-  tmux -2 attach-session -t rails
+#
+# For creating and attaching to tmux sessions
+#
+tmux-start() {
+  local SESSION_NAME=$1
+
+  # Try to attach
+  tmux attach -t $SESSION_NAME || {
+    # Can't attach so we'll create a new session
+
+    # Define useful window lists based on the session
+    case $SESSION_NAME in
+      rails)
+        local WINDOW_NAMES="vim console log test server db dev stage prod" ;;
+      ansible)
+        local WINDOW_NAMES="plays et vagrant roles1 roles2 roles3 roles4 deploy devel" ;;
+      *)
+        local WINDOW_NAMES="bash bash bash bash"
+    esac
+
+    # Create session
+    tmux new -s $SESSION_NAME -d
+
+    # Create windows
+    for w in $WINDOW_NAMES; do
+      tmux new-window -t $SESSION_NAME -n $w
+    done
+
+    # Want to start in window 1
+    tmux select-window -t :1
+
+    # Now attach to new session
+    tmux attach -t $SESSION_NAME
+  }
 }
 
-tm2() {
-  tmux new -s ansible -d
-  tmux new-window -t ansible -n engops
-  tmux new-window -t ansible -n errata-tool
-  tmux new-window -t ansible -n vagrant
-  tmux new-window -t ansible -n roles1
-  tmux new-window -t ansible -n roles2
-  tmux new-window -t ansible -n deploy
-  tmux new-window -t ansible -n devel
-  tmux select-window -t :1
-  tmux -2 attach-session -t ansible
-}
+alias tm1='tmux-start rails'
+alias tm2='tmux-start ansible'
+alias tm3='tmux-start etc'
 
-tma() {
-  tmux -2 a -t rails
-}
-
-tma2() {
-  tmux -2 a -t ansible
-}
+alias tm=tm1

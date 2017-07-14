@@ -23,6 +23,7 @@ dotfile_link bash   .bash_profile
 dotfile_link bash   .bashrc
 dotfile_link bash   .bash_aliases
 dotfile_link screen .screenrc
+dotfile_link tmux   .tmux.conf
 dotfile_link vim    .vimrc
 dotfile_link git    .gitconfig
 dotfile_link git    .gitignore-global
