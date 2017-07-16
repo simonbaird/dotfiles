@@ -38,8 +38,8 @@ case `uname` in
   Linux)
     ###--- Linux only
     alias dnf='sudo dnf'
-    alias docker='sudo docker'
-    alias docker-compose='sudo docker-compose'
+    alias docker='sudo -E docker'
+    alias docker-compose='sudo -E docker-compose'
 
 
 
