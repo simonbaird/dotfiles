@@ -4,6 +4,12 @@
 tmux-start() {
   local SESSION_NAME=$1
 
+  # Bail out if we're already in tmux
+  if [[ -n "$TMUX" ]]; then
+    return 0
+  fi
+
+
   # Try to attach
   tmux attach -t $SESSION_NAME || {
     # Can't attach so we'll create a new session
