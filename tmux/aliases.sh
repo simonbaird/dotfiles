@@ -17,12 +17,18 @@ tmux-start() {
     # Define useful window lists based on the session
     case $SESSION_NAME in
       rails)
-        local WINDOW_NAMES="vim console log test server db dev stage prod" ;;
+        local START_DIR=~/dev/errata-rails
+        local WINDOW_NAMES="vim console jobs server logs docker-up dev stage prod" ;;
       ansible)
-        local WINDOW_NAMES="plays et vagrant roles1 roles2 roles3 roles4 deploy devel" ;;
+        local START_DIR=~/dev/ansible-playbooks/errata-tool-playbooks/playbooks
+        local WINDOW_NAMES="plays et vagrant et-roles roles1 roles2 roles3 deploy dev" ;;
       *)
-        local WINDOW_NAMES="bash bash bash bash"
+        local START_DIR=~/dev/gerrit-nag
+        local WINDOW_NAMES="bash nagbot bash bash bash"
     esac
+
+    # Change dir
+    cd $START_DIR
 
     # Create session
     tmux new -s $SESSION_NAME -d
