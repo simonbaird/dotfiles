@@ -26,7 +26,8 @@
 	# Shortcuts
 	#s = status -sb
 	#st = status -sb
-	s = status
+	s = show
+	ss = show --numstat
 	st = status
 	c = checkout
 	a = add
