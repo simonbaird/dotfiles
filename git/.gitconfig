@@ -54,6 +54,9 @@
 
 	resetfile = checkout
 
+	# Prepend to commit subject
+	prepend-subject = "!__() { git commit --amend -m \"$1 $(git show --format=format:%B -s)\"; }; __"
+
 	# For when you just pushed to gerrit
 	rod = "![ $(git rev-parse --abbrev-ref HEAD) = 'develop' ] && git reset --hard origin/develop"
 
@@ -94,6 +97,7 @@
 	invite       = "!__(){ ( set -x; ssh -p 29418 $GERRIT_HOST gerrit set-reviewers \"$@\" -a user1@example.com -a user2@example.com -p $GERRIT_PROJECT; ); }; __"
 
 	cp = cherry-pick -x
+	cpp = "!__(){ ( set -x; git cp $1; git prepend-subject $2 ); }; __"
 
 	email-rh = "config user.email sbaird@redhat.com"
 	email-sb = "config user.email simon.baird@gmail.com"
