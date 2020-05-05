@@ -64,6 +64,10 @@ case `hostname` in
       echo "http://file.bos.redhat.com/~$USER/$(basename "$1")"
     }
 
+    ginvite() {
+      git invite `git log -n ${1:-1} | grep 'Change-Id:' | cut -d: -f2 | xargs echo`
+    }
+
   ;;
 
 esac
