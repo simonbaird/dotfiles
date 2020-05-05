@@ -28,8 +28,8 @@ Plugin 'pearofducks/ansible-vim'
 "Plugin 'kchmck/vim-coffee-script'
 "Plugin 'groenewege/vim-less'
 "Plugin 'derekwyatt/vim-scala'
-
-Plugin 'twerth/ir_black'
+"
+"Plugin 'twerth/ir_black'
 Plugin 'nanotech/jellybeans.vim'
 
 "-------------------------------------------------------------------------------
@@ -50,6 +50,9 @@ set t_vb=
 set ai                " auto indent
 set hidden            " buffer can be backgrounded without writing (?)
 set nojoinspaces      " don't want two spaces after a full stop
+
+" I have some terminal problems on Mac, this fixes it (hopefully)
+set nolazyredraw
 
 " Intuitive backspacing in insert mode
 set backspace=indent,eol,start
@@ -259,6 +262,9 @@ map <Leader>r :w<CR>:!NO_FIXTURE_LOAD=1 ruby -Ilib:test %<CR>
 "vnoremap < <gv
 "vnoremap > >gv
 
+" Insert pry breakpoint for debugging
+map <Leader>d Orequire 'pry'; binding.pry #<<<<<<<-- DO NOT COMMIT!<ESC>
+
 " That thing where you forget to sudo. doesn't work in gvim :(
 cmap w!! %!sudo tee > /dev/null %
 
@@ -290,6 +296,9 @@ map <Leader>n :bnext<CR>
 map <Leader>p :bprev<CR>
 map <Leader>, <C-^>
 
+" For looking at merge conflicts
+map <Leader>c /^<<<<<<<\\|^=======\\|^>>>>>>><CR>
+
 " shift-f does that clash with anything important?
 "map <Leader>F :Ack 
 "map <S-F> :Ack 
@@ -316,6 +325,10 @@ map <Leader>s :%s/\s\+$//<CR>
 " ,p when you want to copy/paste without line numbers and visible tabs
 "map <Leader>p :set invnumber invlist<CR>
 map <Leader>p :set invnumber<CR>
+
+" ,P when you want to paste something in a terminal
+map <Leader>P :set invpaste<CR>
+
 
 "-------------------------------------------------------------------------------
 " Hall of usefulness past
