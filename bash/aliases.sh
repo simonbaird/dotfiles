@@ -60,8 +60,8 @@ case `hostname` in
     ###--- Work only
 
     filepub() {
-      scp "$1" file.bne.redhat.com:public_html
-      echo "http://file.bne.redhat.com/~$USER/$(basename "$1")"
+      scp "$1" file.bos.redhat.com:public_html
+      echo "http://file.bos.redhat.com/~$USER/$(basename "$1")"
     }
 
   ;;
