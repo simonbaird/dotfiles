@@ -114,6 +114,10 @@
 	amendany = "!f() { [ -n \"$1\" ] && rbparent=$( git log -n1 --format=%H \"$1^\" ) && git fixup \"$1\" && git fastsquash $rbparent; }; f"
 	amendparent = "!git amendany HEAD^"
 
+	# Remove a branch locally and on remote
+	# $1 is the branch name and $2 is the remote name
+	nuke-branch = "!__(){ [ -n \"$1\" ] && [ -n \"$2\" ] && git push -d $2 $1 && git branch -d $1; }; __"
+
 [pretty]
 	nice = format:%Cblue%h %C(cyan)%cr %Cgreen%an%Creset %s%C(yellow)%d %C(black)%cn%Creset
 	pretty-history = format:%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset
