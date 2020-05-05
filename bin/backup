@@ -3,8 +3,9 @@
 # Quick and dirty backup to external disk
 
 START=`date`
-SOURCE=/Users/$USER
-DEST=/Volumes/LITTLE/Backup
+SOURCE=/home/$USER
+#DEST=/Volumes/LITTLE/Backup
+DEST=/run/media/sbaird/SGBlack2T/Backups/nutmeg
 
 rsync -av \
 	--progress \
@@ -13,6 +14,10 @@ rsync -av \
 	--modify-window=1 \
 	--exclude 'Music/iTunes/iTunes Music/*' \
 	--exclude '.Trash/*' \
+	--exclude '.cache/google-chrome/*' \
+	--exclude '.cache/mozilla/*' \
+	--exclude '.gem/ruby/*' \
+	--exclude '.npm/*' \
 	--exclude 'Downloads/*' \
 	--exclude 'Torrents/*' \
 	--exclude 'Library/Caches/*' \
