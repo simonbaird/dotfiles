@@ -118,6 +118,11 @@
 	# $1 is the branch name and $2 is the remote name
 	nuke-branch = "!__(){ [ -n \"$1\" ] && [ -n \"$2\" ] && git push -d $2 $1 && git branch -d $1; }; __"
 
+	# pfr = push for develop, pfr = push for release
+	pfd = "push origin HEAD:refs/for/develop"
+	pfr = "push origin HEAD:refs/for/release"
+	pfh = "push origin HEAD:refs/for/hotfix"
+
 [pretty]
 	nice = format:%Cblue%h %C(cyan)%cr %Cgreen%an%Creset %s%C(yellow)%d %C(black)%cn%Creset
 	pretty-history = format:%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset
