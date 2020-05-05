@@ -23,6 +23,15 @@ alias gg='git grep -n'
 alias rake='bundle exec rake'
 alias rails='bundle exec rails'
 
+diffdiff() {
+  diff <(git diff $1) <(git diff $2)
+}
+
+vimdiffdiff() {
+  #vimdiff <(git diff $1) <(git diff $2)
+  vimdiff <(git show $1) <(git show $2)
+}
+
 rr() {
   NO_FIXTURE_LOAD=1 SILENCE_DEPRECATIONS=1 bundle exec ruby -Ilib:test $*
 }
