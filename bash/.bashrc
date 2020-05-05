@@ -8,3 +8,5 @@ for dir in vim git tmux bash; do
 done
 
 [[ -s ~/.bash_aliases_local ]] && source ~/.bash_aliases_local
+
+DISABLE_AUTO_TITLE=true
