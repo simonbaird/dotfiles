@@ -11,7 +11,7 @@ tmux-start() {
 
 
   # Try to attach
-  tmux attach -t $SESSION_NAME || {
+  tmux -2 attach -t $SESSION_NAME || {
     # Can't attach so we'll create a new session
 
     # Define useful window lists based on the session
@@ -31,7 +31,7 @@ tmux-start() {
     cd $START_DIR
 
     # Create session
-    tmux new -s $SESSION_NAME -d
+    tmux -2 new -s $SESSION_NAME -d
 
     # Create windows
     for w in $WINDOW_NAMES; do

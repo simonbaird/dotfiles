@@ -45,6 +45,12 @@ case `uname` in
     # http://apple.stackexchange.com/questions/39608/running-gnu-screen-with-256-colors-on-os-x-lion
     alias screen='/usr/local/bin/screen'
 
+    # Set CLICOLOR if you want Ansi Colors in iTerm2
+    export CLICOLOR=1
+
+    # Set colors to match iTerm2 Terminal Colors
+    export TERM=xterm-256color
+
   ;;
   Linux)
     ###--- Linux only
