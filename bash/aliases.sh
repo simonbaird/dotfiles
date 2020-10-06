@@ -57,6 +57,7 @@ case `uname` in
     alias dnf='sudo dnf'
     alias docker='sudo -E docker'
     alias docker-compose='sudo -E docker-compose'
+    alias dce='sudo -E docker-compose exec dev'
 
 
 
