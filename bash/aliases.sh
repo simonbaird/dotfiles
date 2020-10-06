@@ -23,6 +23,8 @@ alias gg='git grep -n'
 alias rake='bundle exec rake'
 alias rails='bundle exec rails'
 
+alias ipaddr='ip -4 -br addr | grep UP'
+
 diffdiff() {
   diff <(git diff $1) <(git diff $2)
 }
