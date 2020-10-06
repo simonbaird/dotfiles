@@ -38,6 +38,10 @@ rr() {
   NO_FIXTURE_LOAD=1 SILENCE_DEPRECATIONS=1 bundle exec ruby -Ilib:test $*
 }
 
+certcheck() {
+  nmap -p 443 --script ssl-cert ${1:-redhat.com} |grep -E 'Issuer|Not valid after'
+}
+
 case `uname` in
   Darwin*)
     ###--- Mac only
