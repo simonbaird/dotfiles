@@ -10,7 +10,7 @@ Plugin 'gmarik/vundle'
 "-------------------------------------------------------------------------------
 " Vundle managed plugins
 
-Plugin 'kien/ctrlp.vim'
+Plugin 'junegunn/fzf'
 Plugin 'vim-scripts/bufexplorer.zip'
 Plugin 'scrooloose/nerdtree'
 
@@ -286,9 +286,8 @@ let g:indent_guides_enable_on_vim_startup = 1
 map <Leader>o :NERDTreeToggle<CR>
 map <C-O> :NERDTreeToggle<CR>
 
-" Used to use Command-T (actually shift-T so that's why...)
-let g:ctrlp_map = '<S-T>'
-let g:ctrlp_cmd = 'CtrlPMixed'
+" Shift T for junegunn/fzf
+nnoremap <S-T> :FZF<cr>
 
 map <S-L> :BufExplorer<CR>
 
