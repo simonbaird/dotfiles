@@ -42,6 +42,16 @@ certcheck() {
   nmap -p 443 --script ssl-cert ${1:-redhat.com} |grep -E 'Issuer|Not valid after'
 }
 
+hdmihack() {
+  new_value=${1:-off}
+  sudo bash -c "echo $new_value > /sys/class/drm/card0-DP-1/status"
+}
+
+alias hdmi-off="hdmihack off"
+alias hdmi-on="hdmihack on"
+alias hdmi-detect="hdmihack detect"
+alias hdmi-bounce="hdmihack off; hdmihack detect"
+
 case `uname` in
   Darwin*)
     ###--- Mac only
