@@ -42,15 +42,21 @@ certcheck() {
   nmap -p 443 --script ssl-cert ${1:-redhat.com} |grep -E 'Issuer|Not valid after'
 }
 
-hdmihack() {
-  new_value=${1:-off}
-  sudo bash -c "echo $new_value > /sys/class/drm/card0-DP-1/status"
+hdmiquery() {
+  find /sys/class/drm -name 'card0-*' -print -exec cat {}/status \;
 }
 
-alias hdmi-off="hdmihack off"
-alias hdmi-on="hdmihack on"
-alias hdmi-detect="hdmihack detect"
-alias hdmi-bounce="hdmihack off; hdmihack detect"
+hdmihack() {
+  [[ "$1" =~ off|on|detect ]] || return 1
+  [[ "$2" =~ [0-3] ]] || return 1
+  echo Setting card0-DP-$2 to $1!
+  sudo bash -c "echo $1 > /sys/class/drm/card0-DP-$2/status"
+}
+
+alias hdmi-off="hdmihack off 1"
+alias hdmi-on="hdmihack on 1"
+alias hdmi-detect="hdmihack detect 1"
+alias hdmi-bounce="hdmihack off 1; hdmihack detect 1"
 
 case `uname` in
   Darwin*)
