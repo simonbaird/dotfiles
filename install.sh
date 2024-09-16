@@ -3,10 +3,12 @@
 dotfile_link() {
   SUBDIR=$1
   FILE=$2
-  TARGET=.dotfiles/$SUBDIR/$FILE
+  DIR=$3
+  TARGET=$HOME/.dotfiles/$SUBDIR/$FILE
   TS=`date +%Y%m%d%H%M%S`
 
-  cd $HOME
+  mkdir -p $HOME/$3
+  cd $HOME/$3
   if [ -L $FILE ]; then
     echo Leaving $FILE symlink alone
   else
@@ -19,12 +21,11 @@ dotfile_link() {
   fi
 }
 
-dotfile_link bash   .bash_profile
-dotfile_link bash   .bashrc
-dotfile_link bash   .bash_aliases
-dotfile_link bash   bin
+dotfile_link bash main.sh .bashrc.d
+dotfile_link bash bin
 dotfile_link screen .screenrc
-dotfile_link tmux   .tmux.conf
-dotfile_link vim    .vimrc
-dotfile_link git    .gitconfig
-dotfile_link git    .gitignore-global
+dotfile_link tmux .tmux.conf
+dotfile_link vim .vimrc
+dotfile_link git .gitconfig
+dotfile_link git .gitignore-global
+dotfile_link . nvim .config
