@@ -4,7 +4,11 @@ dotfile_link() {
   SUBDIR=$1
   FILE=$2
   DIR=$3
-  TARGET=$HOME/.dotfiles/$SUBDIR/$FILE
+  if [ $SUBDIR = '.' ]; then
+    TARGET=$HOME/.dotfiles/$FILE
+  else
+    TARGET=$HOME/.dotfiles/$SUBDIR/$FILE
+  fi
   TS=`date +%Y%m%d%H%M%S`
 
   mkdir -p $HOME/$3
