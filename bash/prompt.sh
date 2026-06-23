@@ -29,3 +29,4 @@ _show_git_branch() {
 }
 
 PS1="$_Cyan\h:$_Yellow\w> $_LightBlue\$(_show_git_branch)$_ClearColor"
+#PS1="$_Yellow\$ $_ClearColor"
