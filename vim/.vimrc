@@ -60,6 +60,8 @@ set backspace=indent,eol,start
 set encoding=utf-8
 set fileencoding=utf-8
 
+set nofixendofline
+
 "set showtabline=2     " always show tabs (the window kind)
 "set showtabline=0     " trying to wean off tabs and on to buffers
 set number            " show line numbers

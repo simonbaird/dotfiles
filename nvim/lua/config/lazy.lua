@@ -51,3 +51,15 @@ require("lazy").setup({
     },
   },
 })
+
+local lspconfig = require("lspconfig")
+lspconfig.gopls.setup({
+  settings = {
+    gopls = {
+      buildFlags = { "-tags=unit integration" },
+    },
+  },
+  opts = {
+    autoformat = false,
+  },
+})
