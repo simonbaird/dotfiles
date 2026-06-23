@@ -29,3 +29,4 @@ dotfile_link vim .vimrc
 dotfile_link git .gitconfig
 dotfile_link git .gitignore-global
 dotfile_link . nvim .config
+dotfile_link . ghostty .config
