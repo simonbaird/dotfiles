@@ -1,6 +1,7 @@
 [user]
 	name = Simon Baird
 	email = simon.baird@gmail.com
+	signingkey = 9D13066B606EB723
 
 [color]
 	branch = auto
@@ -17,7 +18,7 @@
 	# -E means less doesn't page if file smaller than one screen
 	# -F means less quits at end of file
 	# -r something to do with ansi colours, it fixes the %C(yellow)%+d coloring somehow
-	pager = less -E -F -r
+	pager = less -R -x4
 
 [alias]
 	# The only way to do it...
@@ -35,7 +36,7 @@
 	d = diff
 	ds = diff --staged
 	sd = diff --staged
-	ca = commit --amend --no-edit
+  ca = commit --amend --no-edit --allow-empty
 	amend = commit --amend
 	ff = merge --ff-only
 
@@ -84,8 +85,8 @@
 	mv-branch = "!f() { git branch -m $1/`git branch-basename`; }; f"
 
 	#lll = log --pretty=nice
-	lll = log --pretty='format:%Cblue%h %C(cyan)%cr %Cgreen%an%Creset %s%C(yellow)%d %Creset'
-	ll = log -n20 --pretty='format:%Cblue%h %C(cyan)%cr %Cgreen%an%Creset %s%C(yellow)%d %Creset'
+	lll = log --pretty='format:%Cblue%h %C(cyan)%cr %Cgreen%an%Creset %s%C(yellow)%d %G?%Creset'
+	ll = log -n20 --pretty='format:%Cblue%h %C(cyan)%cr %Cgreen%an%Creset %s%C(yellow)%d %G?%Creset'
 
 	rbs = rebase -i --autosquash
 	rba = rebase --abort
@@ -124,6 +125,9 @@
 	pfr = "push origin HEAD:refs/for/release"
 	pfh = "push origin HEAD:refs/for/hotfix"
 
+	# Add Co-authored-by for claude to your commit
+	coc = "commit --amend --no-edit --trailer 'Co-authored-by: Claude Code <noreply@anthropic.com>'"
+
 [pretty]
 	nice = format:%Cblue%h %C(cyan)%cr %Cgreen%an%Creset %s%C(yellow)%d %C(black)%cn%Creset
 	pretty-history = format:%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset
@@ -133,5 +137,20 @@
 	commit = yellow reverse
 
 [diff]
-	algorithm = patience
+	algorithm = histogram
 	compactionHeuristic = true
+  #colorMoved = plain
+	mnemonicPrefix = true
+	renames = true
+[commit]
+	gpgsign = true
+[init]
+	defaultBranch = main
+[gpg "ssh"]
+	allowedSignersFile = /home/sbaird/.config/git/allowed_signers
+#[merge]
+#	conflictstyle = zdiff3
+[maintenance]
+	repo = /home/sbaird/.cache/catalog/git/cmdb-status-check.git-464dffca
+[coderabbit]
+	machineId = cli/82da618848d84c68911c54db8d0020fd
