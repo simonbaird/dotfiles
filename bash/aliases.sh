@@ -1,5 +1,5 @@
 # vi
-alias vi=vim
+#alias vi=nvim
 
 # Eg `some_command | pipevim`
 alias pipevim='vim - "+f stdin" "+set ro bt=nowrite"'
@@ -24,6 +24,8 @@ alias rake='bundle exec rake'
 alias rails='bundle exec rails'
 
 alias ipaddr='ip -4 -br addr | grep UP'
+
+alias tprod='ssh fedora@tiddlyhost.com'
 
 diffdiff() {
   diff <(git diff $1) <(git diff $2)
@@ -75,9 +77,9 @@ case `uname` in
   Linux)
     ###--- Linux only
     alias dnf='sudo dnf'
-    alias docker='sudo -E docker'
-    alias docker-compose='sudo -E docker-compose'
-    alias dce='sudo -E docker-compose exec dev'
+    #alias docker='sudo -E docker'
+    #alias docker-compose='sudo -E docker-compose'
+    #alias dce='sudo -E docker-compose exec dev'
 
 
 
