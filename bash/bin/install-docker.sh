@@ -21,3 +21,9 @@ sudo dnf install \
 	containerd.io \
 	docker-buildx-plugin \
 	docker-compose-plugin
+
+sudo systemctl start docker
+sudo systemctl enable docker
+
+sudo usermod -aG docker $USER
+newgrp docker
