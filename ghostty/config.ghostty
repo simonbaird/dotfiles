@@ -1,3 +1,6 @@
-background = black
 font-family = SauceCodePro Nerd Font
 theme = Tomorrow Night Bright
+background = black
+palette = 0=#404040
+font-size = 16
+maximize = true
