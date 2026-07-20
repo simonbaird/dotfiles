@@ -25,10 +25,14 @@
 #  $ gbackground http://assets.warpspire.com/images/github/octocat.png
 #
 # Latest version here:
-#   https://github.com/simonbaird/dotfiles/blob/master/bin/gbackground
+#   https://github.com/simonbaird/dotfiles/blob/main/bash/bin/gbackground
 #
 # TODO:
 #  - use getopt maybe
+#
+# See also:
+#  - A more simple, probably less buggy version:
+#    https://github.com/simonbaird/dotfiles/blob/main/bash/bin/random-wallpaper.sh
 #
 # Author: Simon Baird
 #
