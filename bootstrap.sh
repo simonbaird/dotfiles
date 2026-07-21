@@ -10,5 +10,6 @@
 git clone git@github.com:simonbaird/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
 source ./install.sh
-echo Now run vim_install to setup vim
+echo Run install-everything.sh to install some useful software
+echo Run vim_install to setup vim
 exec bash
