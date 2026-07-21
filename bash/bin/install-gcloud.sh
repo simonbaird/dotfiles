@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 # https://docs.cloud.google.com/sdk/docs/install-sdk#rpm
 
