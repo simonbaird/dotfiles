@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+origin_url=$(git remote get-url origin)
+owner_repo=$(echo "$origin_url" | sed -E 's#.*(github\.com)[:/]##; s#\.git$##')
+
+my_user=$(gh api user --jq '.login')
+my_fork=$(gh api "repos/${owner_repo}/forks" --jq ".[] | select(.owner.login == \"${my_user}\") | .ssh_url")
+
+if [[ -z "$my_fork" ]]; then
+    echo "No fork found for user '${my_user}' of ${owner_repo}"
+    echo "Create one first: gh repo fork ${owner_repo}"
+    exit 1
+fi
+
+echo "Upstream repo: ${owner_repo}"
+echo "Your fork:     ${my_fork}"
+echo ""
+echo "Will run:"
+echo "  git remote rename origin upstream"
+echo "  git remote add origin ${my_fork}"
+echo ""
+read -rp "Proceed? [y/N] " confirm
+[[ "$confirm" =~ ^[Yy]$ ]] || exit 0
+
+git remote rename origin upstream
+git remote add origin "$my_fork"
+
+echo ""
+echo "Done. Remotes:"
+git remote -v
