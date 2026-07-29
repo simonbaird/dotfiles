@@ -5,7 +5,7 @@ origin_url=$(git remote get-url origin)
 owner_repo=$(echo "$origin_url" | sed -E 's#.*(github\.com)[:/]##; s#\.git$##')
 
 my_user=$(gh api user --jq '.login')
-my_fork=$(gh api "repos/${owner_repo}/forks" --jq ".[] | select(.owner.login == \"${my_user}\") | .ssh_url")
+my_fork=$(gh api "repos/${owner_repo}/forks" --paginate --jq ".[] | select(.owner.login == \"${my_user}\") | .ssh_url")
 
 if [[ -z "$my_fork" ]]; then
     echo "No fork found for user '${my_user}' of ${owner_repo}"
