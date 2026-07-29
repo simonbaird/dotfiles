@@ -19,12 +19,14 @@ echo ""
 echo "Will run:"
 echo "  git remote rename origin upstream"
 echo "  git remote add origin ${my_fork}"
+echo "  gh repo set-default upstream"
 echo ""
 read -rp "Proceed? [y/N] " confirm
 [[ "$confirm" =~ ^[Yy]$ ]] || exit 0
 
 git remote rename origin upstream
 git remote add origin "$my_fork"
+gh repo set-default upstream
 
 echo ""
 echo "Done. Remotes:"
