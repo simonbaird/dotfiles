@@ -17,6 +17,6 @@ PATH="$HOME/.rvm/bin:$PATH"
 PATH="$HOME/.local/bin:$PATH"
 
 # For local Conforma builds
-PATH="$HOME/Code/ec/cli/dist:$PATH"
+PATH="$HOME/Code/Conforma/cli/dist:$PATH"
 
 export PATH
