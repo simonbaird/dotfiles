@@ -1,31 +1,38 @@
 #!/bin/sh
-
 # Quick and dirty backup to external disk
 
 START=`date`
 SOURCE=/home/$USER
-#DEST=/Volumes/LITTLE/Backup
-DEST=/run/media/sbaird/SGBlack2T/Backups/nutmeg
+DEST=/run/media/$USER/backup/daily
 
 rsync -av \
-	--progress \
-	--delete \
-	--delete-excluded \
-	--modify-window=1 \
-	--exclude 'Music/iTunes/iTunes Music/*' \
-	--exclude '.Trash/*' \
-	--exclude '.cache/google-chrome/*' \
-	--exclude '.cache/mozilla/*' \
-	--exclude '.gem/ruby/*' \
-	--exclude '.npm/*' \
-	--exclude 'Downloads/*' \
-	--exclude 'Torrents/*' \
-	--exclude 'Library/Caches/*' \
-	--exclude 'Dropbox/*' \
-	$SOURCE $DEST
+  --progress \
+  --delete \
+  --delete-excluded \
+  --modify-window=1 \
+  --exclude='Conforma/konflux-release-data/' \
+  --exclude='Conforma/cli/node_modules' \
+  --exclude='Tiddlyhost/tiddlyhost-com/docker/postgresql-data/' \
+  --exclude='Tiddlyhost/tiddlyhost-com/docker/node_modules' \
+  --exclude='Tiddlyhost/tiddlyhost-com/rails/tmp/cache' \
+  --exclude='Tiddlyhost/tiddlyhost-com/rails/tmp/storage' \
+  --exclude='Tiddlyhost/tiddlyhost-com/rails/storage' \
+  --exclude='Tiddlyhost/tiddlyhost-com/rails/storage2' \
+  --exclude='Tiddlyhost/tiddlyhost-com/rails/public/jsMath' \
+  --exclude='Tiddlyhost/tiddlyhost-com/docker/node_modules' \
+  --exclude='Tiddlyhost/tiddlyhost-com/docker/dotcache' \
+  --exclude='Tiddlyhost/tiddlyhost-com/docker/bundle' \
+  "$SOURCE/Code" \
+  "$SOURCE/Documents" \
+  "$SOURCE/Pictures" \
+  "$SOURCE/.dotfiles" \
+  "$SOURCE/.ssh" \
+  "$SOURCE/.gnupg" \
+  "$SOURCE/.bashrc.d" \
+  "$SOURCE/.config/mozilla/firefox/RedHat.default/bookmarkbackups" \
+  "$DEST"
 
 END=`date`
 
 echo Started $START
 echo Ended $END
-
