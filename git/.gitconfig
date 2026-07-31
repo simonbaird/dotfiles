@@ -1,7 +1,9 @@
 [user]
 	name = Simon Baird
-	email = simon.baird@gmail.com
+	email = sbaird@redhat.com
 	signingkey = 9D13066B606EB723
+	#email = simon.baird@gmail.com
+	#signingkey = 28864A837C503417
 
 [color]
 	branch = auto
@@ -102,7 +104,11 @@
 	cpp = "!__(){ ( set -x; git cp $1; git prepend-subject $2 ); }; __"
 
 	email-rh = "config user.email sbaird@redhat.com"
+	key-rh = "config user.signingkey 9D13066B606EB723"
+
 	email-sb = "config user.email simon.baird@gmail.com"
+	key-sb = "config user.signingkey 28864A837C503417"
+
 	email = "config user.email"
 
 	# In later gits you can use commit --fixup
