@@ -16,6 +16,7 @@ rsync -av \
   --exclude='Tiddlyhost/tiddlyhost-com/docker/node_modules' \
   --exclude='Tiddlyhost/tiddlyhost-com/rails/tmp/cache' \
   --exclude='Tiddlyhost/tiddlyhost-com/rails/tmp/storage' \
+  --exclude='Tiddlyhost/tiddlyhost-com/rails/tmp/storage2' \
   --exclude='Tiddlyhost/tiddlyhost-com/rails/storage' \
   --exclude='Tiddlyhost/tiddlyhost-com/rails/storage2' \
   --exclude='Tiddlyhost/tiddlyhost-com/rails/public/jsMath' \
