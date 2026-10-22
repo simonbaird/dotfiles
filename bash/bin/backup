@@ -16,6 +16,7 @@ rsync -av \
   --exclude='Tiddlyhost/tiddlyhost-com/docker/node_modules' \
   --exclude='Tiddlyhost/tiddlyhost-com/rails/tmp/cache' \
   --exclude='Tiddlyhost/tiddlyhost-com/rails/tmp/storage' \
+  --exclude='Tiddlyhost/tiddlyhost-com/rails/tmp/storage1' \
   --exclude='Tiddlyhost/tiddlyhost-com/rails/tmp/storage2' \
   --exclude='Tiddlyhost/tiddlyhost-com/rails/storage' \
   --exclude='Tiddlyhost/tiddlyhost-com/rails/storage2' \
@@ -23,6 +24,7 @@ rsync -av \
   --exclude='Tiddlyhost/tiddlyhost-com/docker/node_modules' \
   --exclude='Tiddlyhost/tiddlyhost-com/docker/dotcache' \
   --exclude='Tiddlyhost/tiddlyhost-com/docker/bundle' \
+  --exclude='randomibis/scrnsav/target' \
   "$SOURCE/Code" \
   "$SOURCE/Documents" \
   "$SOURCE/Pictures" \
