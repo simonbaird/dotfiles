@@ -1,0 +1,82 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Configure an rclone crypt remote named "gdrive-crypt" whose backing remote is
+# gdrive:RcloneSync. The crypt remote should enable filename and directory-name
+# encryption. Keep the same crypt password and salt on every computer.
+readonly RCLONE_REMOTE="gdrive-crypt"
+
+# Start with this harmless test directory. After verifying sync behavior,
+# replace it with the real directories you want to sync. Paths are relative to
+# $HOME and map to the same paths under the crypt remote.
+readonly -a SYNC_DIRS=(
+  "RcloneSyncTest"
+)
+
+DRY_RUN=0
+RESYNC=0
+
+usage() {
+  printf 'Usage: %s [--dry-run] [--resync]\n' "${0##*/}"
+  printf 'Sync the configured directories between $HOME and %s:\n' "$RCLONE_REMOTE"
+  printf '  --dry-run  Show planned changes without applying them\n'
+  printf '  --resync   Rebuild bisync state (use only for initial setup/recovery)\n'
+}
+
+for arg in "$@"; do
+  case "$arg" in
+    --dry-run) DRY_RUN=1 ;;
+    --resync) RESYNC=1 ;;
+    -h|--help) usage; exit 0 ;;
+    *) usage >&2; exit 2 ;;
+  esac
+done
+
+if ! command -v rclone >/dev/null 2>&1; then
+  printf 'Error: rclone is not installed or not on PATH.\n' >&2
+  exit 1
+fi
+
+if ! rclone listremotes | grep -Fxq "${RCLONE_REMOTE}:"; then
+  printf 'Error: rclone remote "%s" is not configured.\n' "$RCLONE_REMOTE" >&2
+  printf 'Configure a crypt remote backed by gdrive:RcloneSync first.\n' >&2
+  exit 1
+fi
+
+# Check credentials and remote access before starting any syncs.
+if ! rclone lsf "${RCLONE_REMOTE}:" >/dev/null; then
+  printf 'Error: cannot access %s:. Check its rclone configuration and Google Drive login.\n' "$RCLONE_REMOTE" >&2
+  exit 1
+fi
+
+for rel_dir in "${SYNC_DIRS[@]}"; do
+  if [[ -z "$rel_dir" || "$rel_dir" == "." || "$rel_dir" == /* || "$rel_dir" == ".." || "$rel_dir" == ../* || "$rel_dir" == */../* || "$rel_dir" == */.. ]]; then
+    printf 'Error: sync paths must be safe paths relative to $HOME: %s\n' "$rel_dir" >&2
+    exit 1
+  fi
+  if [[ ! -d "$HOME/$rel_dir" ]]; then
+    printf 'Error: source directory does not exist: %s\n' "$HOME/$rel_dir" >&2
+    printf 'Create it on this computer or remove it from SYNC_DIRS.\n' >&2
+    exit 1
+  fi
+done
+
+if (( RESYNC )); then
+  printf 'Warning: --resync rebuilds bisync state for every configured directory.\n'
+  printf 'Review the planned changes with --dry-run before proceeding.\n'
+fi
+
+for rel_dir in "${SYNC_DIRS[@]}"; do
+  source_dir="$HOME/$rel_dir"
+  remote_dir="${RCLONE_REMOTE}:${rel_dir}"
+  printf '\nSyncing %s <-> %s\n' "$source_dir" "$remote_dir"
+
+  args=()
+  if (( DRY_RUN )); then
+    args+=(--dry-run)
+  fi
+  if (( RESYNC )); then
+    args+=(--resync)
+  fi
+  rclone bisync "$source_dir" "$remote_dir" "${args[@]}"
+done
