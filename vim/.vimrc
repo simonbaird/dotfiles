@@ -28,6 +28,9 @@ Plugin 'pearofducks/ansible-vim'
 "Plugin 'kchmck/vim-coffee-script'
 "Plugin 'groenewege/vim-less'
 "Plugin 'derekwyatt/vim-scala'
+
+Plugin 'DingDean/wgsl.vim'
+
 "
 "Plugin 'twerth/ir_black'
 Plugin 'nanotech/jellybeans.vim'
