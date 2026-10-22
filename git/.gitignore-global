@@ -7,3 +7,5 @@
 .vagrant
 
 .claude
+
+**/.claude/settings.local.json
