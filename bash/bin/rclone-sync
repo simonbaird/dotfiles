@@ -2,8 +2,14 @@
 set -euo pipefail
 
 # Configure an rclone crypt remote named "gdrive-crypt" whose backing remote is
-# gdrive:RcloneSync. The crypt remote should enable filename and directory-name
-# encryption. Keep the same crypt password and salt on every computer.
+# gdrive:RcloneSync. Keep the same crypt password and salt on every computer.
+#
+# The remote currently uses filename_encryption=obfuscate and
+# directory_name_encryption=false. File *contents* are properly encrypted
+# (NaCl SecretBox) either way, but obfuscate is a reversible rotation rather
+# than encryption, and the directory tree is stored in plaintext. Switching to
+# filename_encryption=standard would fix both, but renames every object and so
+# means re-uploading everything.
 readonly RCLONE_REMOTE="gdrive-crypt"
 
 # Start with this harmless test directory. After verifying sync behavior,
@@ -13,24 +19,79 @@ readonly -a SYNC_DIRS=(
   "RcloneSyncTest"
 )
 
+# Where this script records which directories it has already resynced. A
+# directory with no marker here gets an automatic first-run resync; see
+# maybe_resync below.
+readonly STATE_DIR="$HOME/.local/state/rclone-sync"
+readonly MARKER_DIR="$STATE_DIR/initialized"
+
+# Overwritten and deleted files are moved into these timestamped directories
+# rather than destroyed. --backup-dir1 must live on the same remote as Path1
+# (local) and --backup-dir2 on the same remote as Path2, so the remote backups
+# are encrypted like everything else; browse them with
+#   rclone lsl gdrive-crypt:_bisync-backup/
+# Nothing is written until a file actually needs backing up, so quiet runs
+# leave no empty directories behind. Prune old ones periodically with
+#   rclone lsf --dirs-only gdrive-crypt:_bisync-backup/<dir>/
+#   rclone purge gdrive-crypt:_bisync-backup/<dir>/<timestamp>
+readonly LOCAL_BACKUP_ROOT="$STATE_DIR/backup"
+readonly REMOTE_BACKUP_ROOT="_bisync-backup"
+
+# Which side wins when a file exists on both sides with different content
+# during a resync. Unlike a normal run, a resync cannot keep both versions, so
+# one always overwrites the other; the backup dirs above are what make that
+# recoverable. "newer" compares modtimes per file and is the safest default
+# when no single machine is authoritative. Override with --resync-mode.
+RESYNC_MODE="newer"
+
 DRY_RUN=0
-RESYNC=0
+RESYNC_ALL=0
+RESYNC_DIRS=()
 
 usage() {
-  printf 'Usage: %s [--dry-run] [--resync]\n' "${0##*/}"
+  printf 'Usage: %s [--dry-run] [--resync DIR]... [--resync-all] [--resync-mode MODE]\n' "${0##*/}"
   printf 'Sync the configured directories between $HOME and %s:\n' "$RCLONE_REMOTE"
-  printf '  --dry-run  Show planned changes without applying them\n'
-  printf '  --resync   Rebuild bisync state (use only for initial setup/recovery)\n'
+  printf '  --dry-run            Show planned changes without applying them\n'
+  printf '  --resync DIR         Rebuild bisync state for DIR only (repeatable)\n'
+  printf '  --resync-all         Rebuild bisync state for every directory (recovery)\n'
+  printf '  --resync-mode MODE   Winner when a resync finds two differing versions:\n'
+  printf '                       path1|path2|newer|older|larger|smaller (default: %s)\n' "$RESYNC_MODE"
+  printf '\n'
+  printf 'Directories that have never been synced on this computer are resynced\n'
+  printf 'automatically on their first run. Losing versions are moved to\n'
+  printf '%s and %s:%s\n' "$LOCAL_BACKUP_ROOT" "$RCLONE_REMOTE" "$REMOTE_BACKUP_ROOT"
 }
 
-for arg in "$@"; do
-  case "$arg" in
+# Arguments that take a value must actually have one.
+require_value() {
+  if (( $# < 2 )); then
+    printf 'Error: %s requires a value.\n' "$1" >&2
+    exit 2
+  fi
+}
+
+while (( $# )); do
+  case "$1" in
     --dry-run) DRY_RUN=1 ;;
-    --resync) RESYNC=1 ;;
+    --resync) require_value "$@"; RESYNC_DIRS+=("$2"); shift ;;
+    --resync=*) RESYNC_DIRS+=("${1#*=}") ;;
+    --resync-all) RESYNC_ALL=1 ;;
+    --resync-mode) require_value "$@"; RESYNC_MODE="$2"; shift ;;
+    --resync-mode=*) RESYNC_MODE="${1#*=}" ;;
     -h|--help) usage; exit 0 ;;
     *) usage >&2; exit 2 ;;
   esac
+  shift
 done
+
+case "$RESYNC_MODE" in
+  path1|path2|newer|older|larger|smaller) ;;
+  *)
+    printf 'Error: invalid --resync-mode "%s".\n' "$RESYNC_MODE" >&2
+    printf 'Valid modes: path1 path2 newer older larger smaller\n' >&2
+    exit 2
+    ;;
+esac
 
 if ! command -v rclone >/dev/null 2>&1; then
   printf 'Error: rclone is not installed or not on PATH.\n' >&2
@@ -59,24 +120,85 @@ for rel_dir in "${SYNC_DIRS[@]}"; do
     printf 'Create it on this computer or remove it from SYNC_DIRS.\n' >&2
     exit 1
   fi
+  # rclone rejects a backup dir that overlaps the path it is backing up, which
+  # would otherwise only surface halfway through a run.
+  if [[ "$STATE_DIR/" == "$HOME/$rel_dir/"* ]]; then
+    printf 'Error: %s holds this script'"'"'s state and cannot be inside a synced directory: %s\n' "$STATE_DIR" "$rel_dir" >&2
+    exit 1
+  fi
+  if [[ "$rel_dir" == "$REMOTE_BACKUP_ROOT" || "$rel_dir" == "$REMOTE_BACKUP_ROOT"/* ]]; then
+    printf 'Error: %s is reserved for remote backups and cannot be synced: %s\n' "$REMOTE_BACKUP_ROOT" "$rel_dir" >&2
+    exit 1
+  fi
 done
 
-if (( RESYNC )); then
-  printf 'Warning: --resync rebuilds bisync state for every configured directory.\n'
+# Every --resync argument must name a configured directory, so a typo fails
+# before any syncing starts rather than silently doing nothing.
+for want in "${RESYNC_DIRS[@]}"; do
+  found=0
+  for rel_dir in "${SYNC_DIRS[@]}"; do
+    [[ "$want" == "$rel_dir" ]] && found=1 && break
+  done
+  if (( ! found )); then
+    printf 'Error: --resync %s is not in SYNC_DIRS.\n' "$want" >&2
+    exit 1
+  fi
+done
+
+if (( RESYNC_ALL )); then
+  printf 'Warning: --resync-all rebuilds bisync state for every configured directory.\n'
   printf 'Review the planned changes with --dry-run before proceeding.\n'
 fi
+
+# One timestamp for the whole run, so a run's backups group together.
+readonly STAMP="$(date +%Y%m%d-%H%M%S)"
+
+# Markers are flat files named after the directory, with / replaced by % so
+# nested paths cannot collide with each other.
+marker_for() {
+  printf '%s/%s' "$MARKER_DIR" "${1//\//%}"
+}
+
+# A directory is resynced when asked for explicitly, or on its first ever run
+# on this computer, when there is no prior listing for bisync to compare
+# against. If the rclone cache is cleared but the marker survives, bisync
+# fails with its own message telling you to resync; rerun with --resync DIR.
+maybe_resync() {
+  local rel_dir="$1" want
+  (( RESYNC_ALL )) && return 0
+  for want in "${RESYNC_DIRS[@]}"; do
+    [[ "$want" == "$rel_dir" ]] && return 0
+  done
+  [[ -e "$(marker_for "$rel_dir")" ]] && return 1
+  return 0
+}
+
+mkdir -p "$MARKER_DIR"
 
 for rel_dir in "${SYNC_DIRS[@]}"; do
   source_dir="$HOME/$rel_dir"
   remote_dir="${RCLONE_REMOTE}:${rel_dir}"
-  printf '\nSyncing %s <-> %s\n' "$source_dir" "$remote_dir"
 
-  args=()
+  args=(
+    --backup-dir1 "$LOCAL_BACKUP_ROOT/$rel_dir/$STAMP"
+    --backup-dir2 "${RCLONE_REMOTE}:${REMOTE_BACKUP_ROOT}/${rel_dir}/${STAMP}"
+  )
   if (( DRY_RUN )); then
     args+=(--dry-run)
   fi
-  if (( RESYNC )); then
-    args+=(--resync)
+
+  if maybe_resync "$rel_dir"; then
+    printf '\nResyncing %s <-> %s (mode: %s)\n' "$source_dir" "$remote_dir" "$RESYNC_MODE"
+    printf 'Files on only one side are kept; differing files resolve to the %s version.\n' "$RESYNC_MODE"
+    args+=(--resync --resync-mode "$RESYNC_MODE")
+  else
+    printf '\nSyncing %s <-> %s\n' "$source_dir" "$remote_dir"
   fi
+
   rclone bisync "$source_dir" "$remote_dir" "${args[@]}"
+
+  # Record success only for real runs; a dry run changes no state.
+  if (( ! DRY_RUN )); then
+    : >"$(marker_for "$rel_dir")"
+  fi
 done
