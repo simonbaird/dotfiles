@@ -2,4 +2,4 @@
 set -euo pipefail
 
 # What else??
-sudo dnf install yq fzf nvim openssl
+sudo dnf install yq fzf nvim openssl tmux
