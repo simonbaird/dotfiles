@@ -12,9 +12,9 @@ set -euo pipefail
 # means re-uploading everything.
 readonly RCLONE_REMOTE="gdrive-crypt"
 
-# Start with this harmless test directory. After verifying sync behavior,
-# replace it with the real directories you want to sync. Paths are relative to
-# $HOME and map to the same paths under the crypt remote.
+# Paths are relative to $HOME and map to the same paths under the crypt remote
+# (backed by gdrive:RcloneSync). Start with one directory and verify its sync
+# behavior before enabling the rest.
 readonly -a SYNC_DIRS=(
   "Documents"
   "Code"
@@ -53,20 +53,23 @@ readonly REMOTE_BACKUP_ROOT="_bisync-backup"
 RESYNC_MODE="newer"
 
 DRY_RUN=0
+PREPARE=0
 RESYNC_ALL=0
 RESYNC_DIRS=()
 
 usage() {
-  printf 'Usage: %s [--dry-run] [--resync DIR]... [--resync-all] [--resync-mode MODE]\n' "${0##*/}"
+  printf 'Usage: %s [--prepare | --dry-run] [--resync DIR]... [--resync-all] [--resync-mode MODE]\n' "${0##*/}"
   printf 'Sync the configured directories between $HOME and %s:\n' "$RCLONE_REMOTE"
+  printf '  --prepare            Create remote directories only, to allow a first dry-run\n'
   printf '  --dry-run            Show planned changes without applying them\n'
   printf '  --resync DIR         Rebuild bisync state for DIR only (repeatable)\n'
   printf '  --resync-all         Rebuild bisync state for every directory (recovery)\n'
   printf '  --resync-mode MODE   Winner when a resync finds two differing versions:\n'
   printf '                       path1|path2|newer|older|larger|smaller (default: %s)\n' "$RESYNC_MODE"
   printf '\n'
-  printf 'Directories that have never been synced on this computer are resynced\n'
-  printf 'automatically on their first run. Losing versions are moved to\n'
+  printf 'Directories that have never been synced on this computer are prepared\n'
+  printf 'and resynced automatically on their first real run. Use --prepare first\n'
+  printf 'if you want to preview that run with --dry-run. Losing versions go to\n'
   printf '%s and %s:%s\n' "$LOCAL_BACKUP_ROOT" "$RCLONE_REMOTE" "$REMOTE_BACKUP_ROOT"
 }
 
@@ -81,6 +84,7 @@ require_value() {
 while (( $# )); do
   case "$1" in
     --dry-run) DRY_RUN=1 ;;
+    --prepare) PREPARE=1 ;;
     --resync) require_value "$@"; RESYNC_DIRS+=("$2"); shift ;;
     --resync=*) RESYNC_DIRS+=("${1#*=}") ;;
     --resync-all) RESYNC_ALL=1 ;;
@@ -91,6 +95,11 @@ while (( $# )); do
   esac
   shift
 done
+
+if (( PREPARE && DRY_RUN )); then
+  printf 'Error: --prepare creates remote directories and cannot be combined with --dry-run.\n' >&2
+  exit 2
+fi
 
 case "$RESYNC_MODE" in
   path1|path2|newer|older|larger|smaller) ;;
@@ -181,11 +190,37 @@ maybe_resync() {
   return 0
 }
 
-mkdir -p "$MARKER_DIR"
+if (( ! DRY_RUN && ! PREPARE )); then
+  mkdir -p "$MARKER_DIR"
+fi
 
 for rel_dir in "${SYNC_DIRS[@]}"; do
   source_dir="$HOME/$rel_dir"
   remote_dir="${RCLONE_REMOTE}:${rel_dir}"
+
+  # Bisync requires both roots to exist, even on a first-run resync. Only
+  # prepare a missing remote on this computer's first run; a missing remote
+  # after initialization should remain an error, not be silently recreated.
+  if (( PREPARE )); then
+    if [[ -e "$(marker_for "$rel_dir")" ]]; then
+      printf 'Error: %s is already initialized; --prepare is for first runs only.\n' "$rel_dir" >&2
+      exit 1
+    fi
+    printf 'Preparing remote directory: %s\n' "$remote_dir"
+    rclone mkdir "$remote_dir"
+    continue
+  fi
+  if [[ ! -e "$(marker_for "$rel_dir")" ]]; then
+    if (( DRY_RUN )); then
+      if ! rclone lsf "$remote_dir" >/dev/null 2>&1; then
+        printf 'Error: cannot dry-run %s because %s does not exist (or cannot be listed).\n' "$rel_dir" "$remote_dir" >&2
+        printf 'Run --prepare to create only the remote directory, then retry --dry-run.\n' >&2
+        exit 1
+      fi
+    else
+      rclone mkdir "$remote_dir"
+    fi
+  fi
 
   args=(
     --backup-dir1 "$LOCAL_BACKUP_ROOT/$rel_dir/$STAMP"
