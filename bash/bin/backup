@@ -3,7 +3,7 @@
 
 START=`date`
 SOURCE=/home/$USER
-DEST=/run/media/$USER/backup/daily
+DEST=/run/media/$USER/backup/`hostname`
 
 rsync -av \
   --progress \
