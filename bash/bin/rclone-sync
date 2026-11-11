@@ -16,7 +16,15 @@ readonly RCLONE_REMOTE="gdrive-crypt"
 # replace it with the real directories you want to sync. Paths are relative to
 # $HOME and map to the same paths under the crypt remote.
 readonly -a SYNC_DIRS=(
-  "RcloneSyncTest"
+  "Documents"
+  "Code"
+  "Pictures"
+  ".pi"
+  ".dotfiles"
+  ".ssh"
+  ".gnupg"
+  ".bashrc.d"
+  ".config/mozilla/firefox/RedHat.default/bookmarkbackups"
 )
 
 # Where this script records which directories it has already resynced. A
